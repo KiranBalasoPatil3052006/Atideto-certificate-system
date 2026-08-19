@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ATIDETO Certificate Preview — Generate and customize internship completion certificates with live preview.">
+<title>ATIDETO Technologies — Certificate Preview</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Bodoni+Moda:ital,wght@0,600;1,600&family=Cinzel:wght@600&family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Dancing+Script:wght@600&family=Great+Vibes&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600&family=Lato:wght@600&family=Lora:ital,wght@0,600;1,600&family=Merriweather:ital,wght@0,600;1,600&family=Montserrat:wght@600&family=Outfit:wght@600&family=Parisienne&family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@600&family=Prata&family=Plus+Jakarta+Sans:wght@600&family=Raleway:wght@600&family=Roboto:wght@500;700&family=Sacramento&family=Satisfy&family=Spectral:ital,wght@0,600;1,600&family=Tangerine:wght@700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="preview-style.css">
+</head>
+<body>
+
+  <nav class="admin-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">ATIDETO <span>Certificate System</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="preview.html" class="nav-link active">Certificate Preview</a>
+        <a href="offer-letter-preview.html" class="nav-link">Offer Letter Review</a>
+        <a href="verify.html" class="nav-link">Verify</a>
+      </div>
+    </div>
+  </nav>
+
+<div class="app">
+
+  <!-- ============ LEFT PANEL : EDITABLE STUDENT DETAILS ============ -->
+  <aside class="editor-panel">
+    <div class="editor-header">
+      <div>
+        <h1>Certificate Generator</h1>
+        <p>Fill in the intern's details — the certificate updates live.</p>
+      </div>
+    </div>
+
+    <form id="certForm" class="editor-form">
+      <!-- Load Student -->
+      <label class="field">
+        <span>Load from Student Record</span>
+        <select id="studentSelect" style="width:100%;border:1.5px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--paper);">
+          <option value="">— Manual Entry —</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Student Name</span>
+        <input type="text" id="studentName" value="Arun Kumar" placeholder="Full name">
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>College Name</span>
+          <input type="text" id="collegeName" value="Anna University" placeholder="e.g. Anna University">
+        </label>
+        <label class="field">
+          <span>Register Number</span>
+          <input type="text" id="registerNo" value="710022104001" placeholder="e.g. 710022104001">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Internship Domain</span>
+        <input type="text" id="domain" value="Web Development" placeholder="e.g. Web Development">
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Start Date</span>
+          <input type="date" id="startDate" value="2026-06-01">
+        </label>
+        <label class="field">
+          <span>End Date</span>
+          <input type="date" id="endDate" value="2026-07-31">
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Duration</span>
+          <input type="text" id="duration" value="2 Months" placeholder="e.g. 2 Months">
+        </label>
+        <label class="field">
+          <span>Issue Date</span>
+          <input type="date" id="issueDate" value="2026-08-01">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Verify ID</span>
+        <input type="text" id="verifyId" value="ATD-INT-2026-0001">
+      </label>
+
+      <label class="field">
+        <span>Verification Link (for QR code)</span>
+        <input type="text" id="qrLink" value="https://atideto.com/verify/ATD-INT-2026-0001" placeholder="https://yourdomain.com/verify/ID">
+      </label>
+    </form>
+
+    <div class="editor-actions">
+      <button type="button" id="generateBackendBtn" class="btn btn-primary">Generate via Backend</button>
+      <button type="button" id="downloadPng" class="btn btn-secondary">Download as PNG</button>
+      <button type="button" id="downloadPdf" class="btn btn-secondary">Download as PDF</button>
+      <div id="generateResult" class="generate-result"></div>
+    </div>
+    <p class="hint">Generate official certificates via backend, or download PNG/PDF for quick use.</p>
+  </aside>
+
+  <!-- ============ RIGHT PANEL : CERTIFICATE PREVIEW ============ -->
+  <main class="preview-panel">
+    <div class="preview-toolbar">
+      <span class="preview-title">Live Certificate Preview</span>
+      <div style="display:flex; gap:8px;">
+        <button id="openCompanyModalRight" class="btn btn-customize-sm">
+          Edit Company & Template
+        </button>
+        <button id="openCustomizeModalRight" class="btn btn-customize-sm">
+          Design & Typography
+        </button>
+      </div>
+    </div>
+
+    <div class="certificate-wrapper">
+      <div class="certificate" id="certificate">
+
+        <img class="cert-bg" src="assets/background1.png" alt="">
+
+        <div class="cert-inner">
+
+          <!-- top row -->
+          <div class="cert-top">
+            <div class="cert-top-left">
+              <img src="assets/atideto-logo.png" alt="ATIDETO Technologies" class="cert-atideto-logo">
+            </div>
+            <div class="cert-top-right">
+              <img src="assets/msme-logo.png" alt="MSME Registered" class="cert-msme-logo">
+              <span class="udyam-id" id="out-udyamId">UDYAM-TN-20-0242534</span>
+            </div>
+          </div>
+
+          <!-- title -->
+          <div class="cert-title-block">
+            <p class="cert-eyebrow" id="out-eyebrow">This certifies that</p>
+            <h2 class="cert-title" id="out-title">Internship Completion Certificate</h2>
+          </div>
+
+          <!-- student name -->
+          <div class="cert-name-block">
+            <h3 class="cert-name" id="out-studentName">Arun Kumar</h3>
+            <div class="cert-underline"></div>
+          </div>
+
+          <!-- domain -->
+          <div class="cert-domain-wrapper">
+            <p class="cert-domain">
+              Internship Domain&nbsp;: <span id="out-domain">Web Development</span>
+            </p>
+          </div>
+
+          <!-- description -->
+          <div class="cert-description">
+            <p id="out-descParagraph">
+              This Certificate of Completion is proudly awarded in recognition of the successful completion of the
+              internship program at <strong>ATIDETO</strong>. Throughout the internship, the intern demonstrated
+              professionalism, dedication, and a strong commitment to learning while contributing to assigned
+              responsibilities and project objectives.
+            </p>
+            <p>
+              The internship was successfully completed from
+              <span id="out-startDate">01 June 2026</span> to <span id="out-endDate">31 July 2026</span> by a student of
+              <strong id="out-collegeName">Anna University</strong> (Register No.: <strong id="out-registerNo">710022104001</strong>).
+              We appreciate the intern's contribution and wish them continued success in their future academic and professional endeavors.
+            </p>
+          </div>
+
+          <!-- bottom info row -->
+          <div class="cert-bottom">
+            <div class="cert-meta">
+              <p><span>Duration</span><b id="out-duration">2 Months</b></p>
+              <p><span>Issue Date</span><b id="out-issueDate">01 Aug 2026</b></p>
+              <p><span>Verify ID</span><b id="out-verifyId">ATD-INT-2026-0001</b></p>
+            </div>
+
+            <div class="cert-qr">
+              <img id="qrImage" src="assets/qr-placeholder.png" alt="Verification QR Code">
+              <span>Scan to verify</span>
+            </div>
+
+            <div class="cert-signature">
+              <div class="sig-line"></div>
+              <p id="out-founderName">Founder, ATIDETO Technologies</p>
+            </div>
+          </div>
+
+          <!-- footer -->
+          <div class="cert-footer">
+            <span><i>&#9993;</i> <span id="out-mail">hello@atideto.com</span></span>
+            <span><i>&#9742;</i> <span id="out-contact">+91 98765 43210</span></span>
+            <span><i>&#127760;</i> <span id="out-website">www.atideto.com</span></span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ============ CUSTOMIZE MODAL / STUDIO ============ -->
+<div id="customizeModal" class="modal-backdrop hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h2>Certificate Design & Typography</h2>
+        <p>Customize fonts, colors, and styling for any element with live preview</p>
+      </div>
+      <button id="closeCustomizeModal" class="btn-close">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="studio-tabs">
+        <button class="tab-btn active" data-tab="elementsTab">Element Styling</button>
+        <button class="tab-btn" data-tab="themesTab">Preset Themes</button>
+        <button class="tab-btn" data-tab="fontsTab">Fonts Explorer</button>
+      </div>
+
+      <div id="elementsTab" class="tab-content active">
+        <div class="studio-grid">
+          <div class="element-picker">
+            <span class="picker-label">Select Element</span>
+            <div class="element-options">
+              <button class="elem-btn active" data-elem="certName">Student Name</button>
+              <button class="elem-btn" data-elem="certTitle">Certificate Title</button>
+              <button class="elem-btn" data-elem="certEyebrow">Eyebrow ("This certifies...")</button>
+              <button class="elem-btn" data-elem="certDomain">Domain Badge</button>
+              <button class="elem-btn" data-elem="certDesc">Description Text</button>
+              <button class="elem-btn" data-elem="certSignatory">Signatory Name</button>
+              <button class="elem-btn" data-elem="certMeta">IDs & Metadata</button>
+            </div>
+          </div>
+
+          <div class="element-controls">
+            <h3 id="currentElemTitle">Student Name Styling</h3>
+
+            <div class="control-group">
+              <label>Font Family</label>
+              <select id="fontFamilySelect" class="studio-select">
+                <optgroup label="Serif (Classic & Regal)">
+                  <option value="Cormorant Garamond" style="font-family: 'Cormorant Garamond', serif; font-size: 16px;">Cormorant Garamond</option>
+                  <option value="Playfair Display" style="font-family: 'Playfair Display', serif; font-size: 15px;">Playfair Display</option>
+                  <option value="Lora" style="font-family: 'Lora', serif; font-size: 15px;">Lora</option>
+                  <option value="Merriweather" style="font-family: 'Merriweather', serif; font-size: 14px;">Merriweather</option>
+                  <option value="Cinzel" style="font-family: 'Cinzel', serif; font-size: 15px;">Cinzel</option>
+                  <option value="Bodoni Moda" style="font-family: 'Bodoni Moda', serif; font-size: 15px;">Bodoni Moda</option>
+                  <option value="Spectral" style="font-family: 'Spectral', serif; font-size: 15px;">Spectral</option>
+                  <option value="Prata" style="font-family: 'Prata', serif; font-size: 15px;">Prata</option>
+                </optgroup>
+                <optgroup label="Calligraphy & Script">
+                  <option value="Great Vibes" style="font-family: 'Great Vibes', cursive; font-size: 18px;">Great Vibes</option>
+                  <option value="Dancing Script" style="font-family: 'Dancing Script', cursive; font-size: 17px;">Dancing Script</option>
+                  <option value="Alex Brush" style="font-family: 'Alex Brush', cursive; font-size: 18px;">Alex Brush</option>
+                  <option value="Tangerine" style="font-family: 'Tangerine', cursive; font-size: 20px;">Tangerine</option>
+                  <option value="Parisienne" style="font-family: 'Parisienne', cursive; font-size: 18px;">Parisienne</option>
+                  <option value="Sacramento" style="font-family: 'Sacramento', cursive; font-size: 18px;">Sacramento</option>
+                  <option value="Satisfy" style="font-family: 'Satisfy', cursive; font-size: 16px;">Satisfy</option>
+                  <option value="Allura" style="font-family: 'Allura', cursive; font-size: 18px;">Allura</option>
+                </optgroup>
+                <optgroup label="Sans-Serif (Clean & Modern)">
+                  <option value="Inter" style="font-family: 'Inter', sans-serif;">Inter</option>
+                  <option value="Roboto" style="font-family: 'Roboto', sans-serif;">Roboto</option>
+                  <option value="Montserrat" style="font-family: 'Montserrat', sans-serif;">Montserrat</option>
+                  <option value="Poppins" style="font-family: 'Poppins', sans-serif;">Poppins</option>
+                  <option value="Outfit" style="font-family: 'Outfit', sans-serif;">Outfit</option>
+                  <option value="Raleway" style="font-family: 'Raleway', sans-serif;">Raleway</option>
+                  <option value="Plus Jakarta Sans" style="font-family: 'Plus Jakarta Sans', sans-serif;">Plus Jakarta Sans</option>
+                  <option value="Lato" style="font-family: 'Lato', sans-serif;">Lato</option>
+                </optgroup>
+                <optgroup label="Monospace">
+                  <option value="JetBrains Mono" style="font-family: 'JetBrains Mono', monospace;">JetBrains Mono</option>
+                  <option value="Fira Code" style="font-family: 'Fira Code', monospace;">Fira Code</option>
+                  <option value="Space Mono" style="font-family: 'Space Mono', monospace;">Space Mono</option>
+                </optgroup>
+              </select>
+              <input type="text" id="customFontInput" class="studio-input mt-2" placeholder="Or type any Google Font (e.g. Tangerine)">
+            </div>
+
+            <div class="control-row">
+              <div class="control-group">
+                <label>Font Color</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" id="elemColorPicker" value="#12539c">
+                  <input type="text" id="elemColorHex" class="studio-input hex-input" value="#12539c">
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Font Style</label>
+                <button id="italicToggleBtn" class="btn-toggle"><i>I</i> Italic</button>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="control-group">
+                <label>Font Size</label>
+                <div class="range-wrapper">
+                  <button type="button" id="fontSizeDecBtn" class="btn-step" title="Decrease font size">-</button>
+                  <input type="range" id="fontSizeRange" min="8" max="80" step="1" value="24">
+                  <button type="button" id="fontSizeIncBtn" class="btn-step" title="Increase font size">+</button>
+                  <span id="fontSizeVal" class="size-badge">24px</span>
+                </div>
+              </div>
+              <div class="control-group">
+                <label>Font Weight</label>
+                <select id="fontWeightSelect" class="studio-select">
+                  <option value="400">Regular (400)</option>
+                  <option value="500">Medium (500)</option>
+                  <option value="600">SemiBold (600)</option>
+                  <option value="700">Bold (700)</option>
+                  <option value="800">ExtraBold (800)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="swatches-group">
+              <label>Color Swatches</label>
+              <div class="swatches-list">
+                <button class="swatch" style="background:#0b2545" data-color="#0b2545" title="Navy"></button>
+                <button class="swatch" style="background:#12539c" data-color="#12539c" title="Royal Blue"></button>
+                <button class="swatch" style="background:#a8791f" data-color="#a8791f" title="Gold"></button>
+                <button class="swatch" style="background:#0d5c3a" data-color="#0d5c3a" title="Emerald"></button>
+                <button class="swatch" style="background:#6b1224" data-color="#6b1224" title="Burgundy"></button>
+                <button class="swatch" style="background:#1b232e" data-color="#1b232e" title="Charcoal"></button>
+                <button class="swatch" style="background:#000000" data-color="#000000" title="Black"></button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div id="themesTab" class="tab-content hidden">
+        <div class="themes-grid">
+          <div class="theme-card" data-theme="classic">
+            <div class="theme-badge">Royal</div>
+            <h4>Classic Gold & Navy</h4>
+            <p>Cormorant Garamond + Playfair Display + Gold accents</p>
+          </div>
+          <div class="theme-card" data-theme="calligraphy">
+            <div class="theme-badge">Script</div>
+            <h4>Calligraphic Script</h4>
+            <p>Great Vibes Script + Bodoni Serif + Burgundy accents</p>
+          </div>
+          <div class="theme-card" data-theme="modern">
+            <div class="theme-badge">Clean</div>
+            <h4>Modern Minimalist</h4>
+            <p>Montserrat + Inter + Emerald Green accents</p>
+          </div>
+          <div class="theme-card" data-theme="vintage">
+            <div class="theme-badge">Regal</div>
+            <h4>Vintage Elegance</h4>
+            <p>Cinzel + Tangerine + Deep Gold</p>
+          </div>
+          <div class="theme-card" data-theme="tech">
+            <div class="theme-badge">Cyber</div>
+            <h4>Tech Monospace</h4>
+            <p>JetBrains Mono + Outfit + Sapphire Blue</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="fontsTab" class="tab-content hidden">
+        <div class="fonts-explorer">
+          <div class="fonts-search-bar">
+            <input type="text" id="fontSearchInput" class="studio-input" placeholder="Type ANY Google Font (e.g. Poppins, Tangerine, Lora)...">
+            <button id="applySearchFont" class="btn btn-primary btn-sm">Load & Apply Font</button>
+          </div>
+          <div class="font-categories">
+            <div class="font-cat">
+              <h4>Calligraphy & Script</h4>
+              <div class="font-chips">
+                <span class="font-chip" data-font="Great Vibes" style="font-family: 'Great Vibes', cursive; font-size: 18px;">Great Vibes</span>
+                <span class="font-chip" data-font="Dancing Script" style="font-family: 'Dancing Script', cursive; font-size: 16px;">Dancing Script</span>
+                <span class="font-chip" data-font="Alex Brush" style="font-family: 'Alex Brush', cursive; font-size: 18px;">Alex Brush</span>
+                <span class="font-chip" data-font="Tangerine" style="font-family: 'Tangerine', cursive; font-size: 20px;">Tangerine</span>
+                <span class="font-chip" data-font="Parisienne" style="font-family: 'Parisienne', cursive; font-size: 18px;">Parisienne</span>
+                <span class="font-chip" data-font="Sacramento" style="font-family: 'Sacramento', cursive; font-size: 18px;">Sacramento</span>
+                <span class="font-chip" data-font="Satisfy" style="font-family: 'Satisfy', cursive; font-size: 16px;">Satisfy</span>
+                <span class="font-chip" data-font="Allura" style="font-family: 'Allura', cursive; font-size: 18px;">Allura</span>
+              </div>
+            </div>
+            <div class="font-cat">
+              <h4>Formal Serif</h4>
+              <div class="font-chips">
+                <span class="font-chip" data-font="Cormorant Garamond" style="font-family: 'Cormorant Garamond', serif; font-size: 16px;">Cormorant Garamond</span>
+                <span class="font-chip" data-font="Playfair Display" style="font-family: 'Playfair Display', serif; font-size: 15px;">Playfair Display</span>
+                <span class="font-chip" data-font="Lora" style="font-family: 'Lora', serif; font-size: 15px;">Lora</span>
+                <span class="font-chip" data-font="Merriweather" style="font-family: 'Merriweather', serif; font-size: 14px;">Merriweather</span>
+                <span class="font-chip" data-font="Cinzel" style="font-family: 'Cinzel', serif; font-size: 15px;">Cinzel</span>
+                <span class="font-chip" data-font="Bodoni Moda" style="font-family: 'Bodoni Moda', serif; font-size: 15px;">Bodoni Moda</span>
+                <span class="font-chip" data-font="Spectral" style="font-family: 'Spectral', serif; font-size: 15px;">Spectral</span>
+                <span class="font-chip" data-font="Prata" style="font-family: 'Prata', serif; font-size: 15px;">Prata</span>
+              </div>
+            </div>
+            <div class="font-cat">
+              <h4>Modern Sans-Serif & Monospace</h4>
+              <div class="font-chips">
+                <span class="font-chip" data-font="Inter" style="font-family: 'Inter', sans-serif;">Inter</span>
+                <span class="font-chip" data-font="Roboto" style="font-family: 'Roboto', sans-serif;">Roboto</span>
+                <span class="font-chip" data-font="Montserrat" style="font-family: 'Montserrat', sans-serif;">Montserrat</span>
+                <span class="font-chip" data-font="Poppins" style="font-family: 'Poppins', sans-serif;">Poppins</span>
+                <span class="font-chip" data-font="Outfit" style="font-family: 'Outfit', sans-serif;">Outfit</span>
+                <span class="font-chip" data-font="Raleway" style="font-family: 'Raleway', sans-serif;">Raleway</span>
+                <span class="font-chip" data-font="Plus Jakarta Sans" style="font-family: 'Plus Jakarta Sans', sans-serif;">Plus Jakarta Sans</span>
+                <span class="font-chip" data-font="JetBrains Mono" style="font-family: 'JetBrains Mono', monospace;">JetBrains Mono</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button id="resetDefaultsBtn" class="btn btn-secondary">Reset Defaults</button>
+      <button id="closeModalDone" class="btn btn-primary">Apply & Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COMPANY & TEMPLATE CONTENT MODAL ============ -->
+<div id="companyModal" class="modal-backdrop hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <h2>Certificate Template & Company Content</h2>
+        <p>Edit static company text, certificate titles, description template, and contact details</p>
+      </div>
+      <button type="button" id="closeCompanyModal" class="btn-close">&times;</button>
+    </div>
+
+    <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
+      <div class="studio-group-box">
+        <h3>Certificate Header & Titles</h3>
+        <div class="field-row">
+          <label class="field">
+            <span>Eyebrow Text</span>
+            <input type="text" id="certEyebrowInput" value="This certifies that" placeholder="e.g. This certifies that">
+          </label>
+          <label class="field">
+            <span>Certificate Main Title</span>
+            <input type="text" id="certTitleInput" value="Internship Completion Certificate" placeholder="e.g. Internship Completion Certificate">
+          </label>
+        </div>
+      </div>
+
+      <div class="studio-group-box">
+        <h3>Certificate Description Paragraph</h3>
+        <label class="field">
+          <span>Main Certificate Text</span>
+          <textarea id="certDescParagraphInput" rows="4" class="studio-textarea">This Certificate of Completion is proudly awarded in recognition of the successful completion of the internship program at ATIDETO. Throughout the internship, the intern demonstrated professionalism, dedication, and a strong commitment to learning while contributing to assigned responsibilities and project objectives.</textarea>
+        </label>
+      </div>
+
+      <div class="studio-group-box">
+        <h3>Company & Signatory Info</h3>
+        <div class="field-row">
+          <label class="field">
+            <span>Founder / Signatory Designation</span>
+            <input type="text" id="founderName" value="Founder, ATIDETO Technologies" placeholder="Founder, ATIDETO Technologies">
+          </label>
+          <label class="field">
+            <span>UDYAM Registration ID</span>
+            <input type="text" id="udyamId" value="UDYAM-TN-20-0242534" placeholder="UDYAM-TN-20-XXXXXXX">
+          </label>
+        </div>
+        <div class="field-row small-fields">
+          <label class="field">
+            <span>Contact Email</span>
+            <input type="text" id="mail" value="hello@atideto.com">
+          </label>
+          <label class="field">
+            <span>Contact Phone</span>
+            <input type="text" id="contact" value="+91 98765 43210">
+          </label>
+          <label class="field">
+            <span>Website URL</span>
+            <input type="text" id="website" value="www.atideto.com">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" id="closeCompanyModalDone" class="btn btn-primary">Done & Apply Template</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="api.js"></script>
+<script src="preview-script.js"></script>
+</body>
+</html>

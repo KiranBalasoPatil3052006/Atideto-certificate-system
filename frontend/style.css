@@ -1,0 +1,551 @@
+:root {
+  --navy: #0A3D91;
+  --body-text: #333333;
+  --meta-text: #555555;
+  --footer-text: #666666;
+  --divider: #D9E5F7;
+  --line: #dfe4ea;
+  --paper: #ffffff;
+  --steel: #6b7a8f;
+  --shadow: 0 15px 35px rgba(10,61,145,.08);
+  
+  --color-bg: #F9FAFB;
+  --color-surface: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-border-hover: #D1D5DB;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --radius-md: 8px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: #1b232e;
+  min-height: 100vh;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  height: calc(100vh - 62px);
+  overflow: hidden;
+}
+
+/* ================= LEFT : EDITOR PANEL ================= */
+.editor-panel {
+  background: #ffffff;
+  border-right: 1px solid var(--line);
+  padding: 24px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.editor-logo { width: 44px; height: auto; flex-shrink: 0; }
+.editor-header h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  margin: 0 0 2px;
+  color: var(--navy);
+  font-weight: 600;
+}
+.editor-header p {
+  font-size: 12px;
+  margin: 0;
+  color: var(--steel);
+  line-height: 1.4;
+}
+
+.panel-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.panel-block-head h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  margin: 0 0 3px;
+  color: var(--navy);
+  font-weight: 600;
+}
+.panel-block-head h2 span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--steel);
+  text-transform: none;
+}
+.panel-block-head p {
+  font-size: 11.5px;
+  margin: 0;
+  color: var(--steel);
+  line-height: 1.45;
+}
+
+.template-block {
+  background: #f4f8ff;
+  border: 1px solid #dfe9fb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.divider-line {
+  height: 1px;
+  background: var(--divider);
+  margin: 2px 0;
+}
+
+.edit-mode-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.edit-mode-controls.hidden { display: none; }
+.edit-live-hint {
+  font-size: 11.5px;
+  color: #2a6b3d;
+  background: #eaf7ee;
+  border: 1px solid #cdeed7;
+  border-radius: 8px;
+  padding: 9px 10px;
+  margin: 0;
+  line-height: 1.4;
+}
+.btn-row { display: flex; gap: 8px; }
+.btn-row .btn { flex: 1; }
+
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+.field span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--steel);
+}
+.field input, .field select {
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  color: #1b232e;
+  background: #f8fafc;
+  transition: border-color .15s, box-shadow .15s;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(10,61,145,.14);
+  background: #fff;
+}
+.field-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editor-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: transform .1s ease, box-shadow .15s ease, background .15s ease;
+}
+.btn:active { transform: scale(.98); }
+.btn-block { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-icon { font-size: 15px; }
+.btn-primary {
+  background: linear-gradient(135deg, #2166c4, var(--navy));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(10,61,145,.2);
+}
+.btn-primary:hover { box-shadow: 0 6px 16px rgba(10,61,145,.3); }
+.btn-secondary {
+  background: #fff;
+  color: var(--navy);
+  border: 1.5px solid var(--line);
+}
+.btn-secondary:hover { border-color: var(--navy); }
+
+.hint {
+  font-size: 11.5px;
+  color: var(--steel);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ================= RIGHT : PREVIEW PANEL ================= */
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 28px 32px 48px;
+  overflow-y: auto;
+  height: 100%;
+  background: var(--color-bg);
+}
+
+.letter-wrapper {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.letter{
+  position:relative;
+  width:100%;
+  aspect-ratio:1023 / 1537;
+  background:#ffffff url('assets/background.png?v=2') no-repeat center / 100% 100%;
+  border-radius:4px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  container-type:inline-size;
+  container-name:letter;
+}
+
+.letter-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:fill;
+  z-index:0;
+}
+
+.letter-inner{
+  position:relative;
+  z-index:1;
+  height:100%;
+  width:100%;
+  padding:6.5% 8.5% 5.5%;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+}
+
+/* Header & Logo horizontally centered */
+.letter-header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:clamp(40px,9.5cqw,68px);
+  text-align:center;
+}
+.letter-logo{
+  height:clamp(38px,9.2cqw,64px);
+  width:auto;
+}
+.header-divider{
+  height:1px;
+  background:var(--divider);
+  margin-top:clamp(8px,2cqw,14px);
+}
+
+/* Main Title: Poppins SemiBold, 28pt, moved higher up, with line after it */
+.letter-title{
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:clamp(16px,4.8cqw,28px);
+  color:var(--navy);
+  text-align:center;
+  letter-spacing:0.01em;
+  text-transform:uppercase;
+  margin:clamp(8px,2cqw,14px) 0 clamp(8px,2cqw,12px);
+}
+
+.title-divider{
+  height:1px;
+  background:var(--divider);
+  margin-bottom:clamp(14px,3.5cqw,22px);
+}
+
+/* Offer Letter Number & Date: Inter Medium, 10.5pt, #555555 */
+.meta-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:clamp(14px,3.5cqw,22px);
+}
+.meta-row p{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  font-size:clamp(7.5px,2.1cqw,10.5px);
+  color:var(--meta-text);
+}
+.offer-no{text-align:left;}
+.offer-date{text-align:right;}
+
+/* Recipient Information: Inter Regular, Student Name SemiBold, 11pt, #333333 with Name in #1e40af */
+.recipient-block{
+  display:flex;
+  flex-direction:column;
+  gap:clamp(2px,0.6cqw,4px);
+  margin-bottom:clamp(14px,3.5cqw,22px);
+}
+.recipient-block p{margin:0;}
+#tpl-to{
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+  margin-bottom:2px;
+}
+.recipient-name{
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+}
+#out-studentName, #out-dearName, #olRenderName, #olRenderDear{
+  color:#1e40af;
+  font-weight:600;
+}
+.recipient-line{
+  font-family:'Inter',sans-serif;
+  font-weight:400;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+}
+
+/* Salutation: Inter Medium, 11pt, #333333 */
+.dear-line{
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+  margin-bottom:clamp(10px,2.4cqw,14px);
+}
+
+/* Body Paragraph: Inter Regular, 11pt, Line Height 1.6, Justified */
+.body-paragraph{
+  font-family:'Inter',sans-serif;
+  font-weight:400;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+  line-height:1.6;
+  text-align:justify;
+  margin-bottom:clamp(14px,3.5cqw,22px);
+}
+
+/* Section Divider: 1px #D9E5F7 */
+.section-divider{
+  height:1px;
+  background:var(--divider);
+  margin:clamp(12px,3cqw,20px) 0;
+}
+
+/* Section Heading (Internship Details): simple text with distinct color, NO two border lines, NOT uppercase */
+.section-heading{
+  font-family:'Poppins',sans-serif;
+  font-weight:600;
+  font-size:clamp(9.5px,2.6cqw,13px);
+  color:#1e40af;
+  text-transform:none;
+  text-align:left;
+  padding:0;
+  border:none;
+  margin:clamp(12px,3cqw,18px) 0 clamp(8px,2cqw,12px);
+  letter-spacing:0.01em;
+}
+
+/* Internship Details: Light Opacity Executive Table */
+.details-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:rgba(244,248,255,0.45);
+  border:1px solid rgba(217,229,247,0.75);
+  border-radius:8px;
+  overflow:hidden;
+  margin-bottom:clamp(14px,3.5cqw,22px);
+}
+.details-table tr:not(:last-child) td{
+  border-bottom:1px solid rgba(217,229,247,0.5);
+}
+.details-table td{
+  padding:clamp(6px,1.4cqw,9.5px) clamp(10px,2.2cqw,16px);
+  font-family:'Inter',sans-serif;
+  font-size:clamp(7.8px,2.1cqw,10.5px);
+  line-height:1.4;
+  vertical-align:middle;
+}
+.details-table .detail-label{
+  font-weight:500;
+  color:#1e40af;
+  width:36%;
+  text-transform:none;
+  letter-spacing:0.2px;
+  font-size:clamp(7.8px,2.1cqw,10.5px);
+}
+.details-table .detail-sep{
+  width:4%;
+  text-align:center;
+  color:var(--body-text);
+  font-weight:400;
+}
+.details-table .detail-value{
+  font-weight:400;
+  color:var(--body-text);
+  width:60%;
+}
+
+.details-block{
+  display:flex;
+  flex-direction:column;
+  gap:clamp(4px,1.2cqw,8px);
+  margin-bottom:clamp(14px,3.5cqw,22px);
+}
+.details-block p{
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Inter',sans-serif;
+  font-size:clamp(8px,2.2cqw,11px);
+  line-height:1.5;
+}
+
+/* Signature Area: Right-positioned, Sincerely aligned to left starting point of ATIDETO Technologies, Founder centered */
+.signature-block{
+  align-self:flex-end;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+  margin-top:clamp(36px,8cqw,60px);
+  margin-bottom:clamp(4px,1.2cqw,10px);
+  width:auto;
+}
+.sincerely{
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+  margin:0;
+  text-align:left;
+  width:100%;
+}
+.signature-space{
+  height:clamp(30px,7.5cqw,50px);
+  width:100%;
+}
+.digital-sig{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(7px,1.8cqw,9.5px);
+  font-style:italic;
+  color:var(--steel);
+  margin:0 0 3px;
+  text-align:center;
+  width:100%;
+}
+.founder-title{
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+  margin:0 0 1px;
+  text-align:center;
+  width:100%;
+}
+.company-name{
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  font-size:clamp(8px,2.2cqw,11px);
+  color:var(--body-text);
+  margin:0;
+  text-align:left;
+  width:100%;
+  white-space:nowrap;
+}
+
+/* Footer: Inter Regular, 9.5pt, #666666, Center aligned, single line separated by subtle #D9E5F7 dividers */
+.letter-footer{
+  margin-top:auto;
+  text-align:center;
+  padding-top:clamp(10px,2.5cqw,18px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(4px,1.2cqw,10px);
+  flex-wrap:nowrap;
+  white-space:nowrap;
+}
+.letter-footer span{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(6.5px,1.8cqw,9.5px);
+  color:var(--footer-text);
+  font-weight:400;
+}
+.footer-sep{
+  color:var(--divider);
+  font-size:clamp(6.5px,1.8cqw,9.5px);
+  font-weight:400;
+}
+
+/* ================= CONTENTEDITABLE STATE ================= */
+.letter.editing-mode .tpl-editable,
+.letter.editing-mode .tpl-editable-inline{
+  outline:1.5px dashed #2166c4;
+  outline-offset:2px;
+  background:rgba(33,102,196,.06);
+  border-radius:3px;
+  cursor:text;
+}
+.letter.editing-mode .tpl-editable:focus,
+.letter.editing-mode .tpl-editable-inline:focus{
+  outline:1.5px solid #2166c4;
+  background:rgba(33,102,196,.1);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:980px){
+  .app{grid-template-columns:1fr;}
+  .editor-panel{border-right:none;border-bottom:1px solid var(--line);}
+  .preview-panel{padding:24px 16px 40px;}
+}
+@media (max-width:560px){
+  .field-row{flex-direction:column;}
+}

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ATIDETO Certificate Admin — Manage internship certificates, student applications, and certificate generation.">
+<title>ATIDETO — Certificate Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Playfair+Display:wght@800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="admin-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">ATIDETO <span>Certificate System</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Dashboard</a>
+        <a href="preview.html" class="nav-link">Certificate Preview</a>
+        <a href="offer-letter-preview.html" class="nav-link">Offer Letter Review</a>
+        <a href="verify.html" class="nav-link">Verify</a>
+      </div>
+      <button id="logoutBtn" class="btn btn-outline hidden" style="padding:6px 14px;">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Login View -->
+  <div id="loginView" class="login-wrapper">
+    <div class="login-card">
+      <div class="login-brand-header">
+        <img src="assets/atideto-logo.png" alt="ATIDETO" class="login-logo">
+        <h3>Admin Sign In</h3>
+        <p class="admin-subtitle">Sign in with your Atideto admin account to manage internship certificates and student applications.</p>
+      </div>
+      <div id="loginError" class="msg msg-error hidden"></div>
+      <form class="login-form" onsubmit="event.preventDefault();">
+        <div class="field-group">
+          <label for="loginEmail">Email Address</label>
+          <input id="loginEmail" type="email" placeholder="admin@atideto.in" required>
+        </div>
+        <div class="field-group">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="••••••••" required>
+        </div>
+        <button id="loginBtn" type="button" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <main class="admin-main hidden" id="adminMain">
+    <div class="admin-header">
+      <div>
+        <h1>Certificate Admin</h1>
+        <p class="admin-subtitle">Manage internship certificates</p>
+      </div>
+    </div>
+
+    <div id="message" class="msg hidden"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="students">Students</button>
+      <button class="tab" data-tab="certificates">Certificates</button>
+    </div>
+
+    <!-- Students Tab -->
+    <div id="tab-students" class="tab-panel active">
+      <div class="card">
+        <div class="card-header">
+          <h3>Internship Applications</h3>
+          <div class="card-actions">
+            <button id="bulkGenerateBtn" class="btn btn-primary hidden">Generate Certificates</button>
+            <button id="refreshStudentsBtn" class="btn btn-outline">Refresh</button>
+          </div>
+        </div>
+        <div id="studentsLoading" class="loading">Loading students...</div>
+        <div id="studentsError" class="msg msg-error hidden"></div>
+        <div id="studentsEmpty" class="empty hidden">No student registrations found.</div>
+        <div id="studentsTableWrap" class="table-wrap hidden">
+          <table id="studentsTable">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAllStudents"></th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>College</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificates Tab -->
+    <div id="tab-certificates" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h3>Issued Certificates</h3>
+          <button id="refreshCertificatesBtn" class="btn btn-outline">Refresh</button>
+        </div>
+        <div id="certsLoading" class="loading">Loading certificates...</div>
+        <div id="certsError" class="msg msg-error hidden"></div>
+        <div id="certsEmpty" class="empty hidden">No certificates issued yet.</div>
+        <div id="certsTableWrap" class="table-wrap hidden">
+          <table id="certsTable">
+            <thead>
+              <tr>
+                <th>Certificate ID</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>College</th>
+                <th>Issued</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="certsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Details Modal -->
+    <div id="studentModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Student Registration Details</h3>
+          <button id="closeStudentModal" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modalStudentBody">
+          <!-- Populated dynamically by index.js -->
+        </div>
+        <div class="modal-footer">
+          <button id="modalGenerateBtn" class="btn btn-primary">Generate Certificate</button>
+          <button id="modalPreviewBtn" class="btn btn-outline">Preview Certificate</button>
+          <button id="modalCloseBtn" class="btn btn-outline">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Format Selection Modal -->
+    <div id="formatModal" class="modal-backdrop hidden">
+      <div class="modal-card modal-card-sm">
+        <div class="modal-header">
+          <h3 id="formatModalTitle">Select Certificate Download Format</h3>
+          <button id="closeFormatModal" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="formatModalSub" class="format-modal-subtitle">Choose the file format for your generated certificate(s):</p>
+          <div class="format-options-grid">
+            <label class="format-card active" id="formatCardPng">
+              <input type="radio" name="certFormat" value="png" checked class="format-radio">
+              <div class="format-card-content">
+                <div class="format-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <div class="format-info">
+                  <span class="format-title">PNG Image Format</span>
+                  <span class="format-desc" id="formatPngDesc">Download high-resolution PNG image directly</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="format-card" id="formatCardPdf">
+              <input type="radio" name="certFormat" value="pdf" class="format-radio">
+              <div class="format-card-content">
+                <div class="format-icon-box format-icon-pdf">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <div class="format-info">
+                  <span class="format-title">PDF Document Format</span>
+                  <span class="format-desc" id="formatPdfDesc">Download printable PDF certificate</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelFormatBtn" class="btn btn-outline">Cancel</button>
+          <button id="confirmFormatBtn" class="btn btn-primary">
+            <span>Generate & Download</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden certificate render container matching preview.html format -->
+    <div id="renderHost" style="position:fixed; left:-9999px; top:-9999px; width:1344px; height:896px; z-index:-100; overflow:hidden;">
+      <div class="certificate" id="certificateRender">
+        <img class="cert-bg" src="assets/background1.png" alt="">
+        <div class="cert-inner">
+          <div class="cert-top">
+            <div class="cert-top-left">
+              <img src="assets/atideto-logo.png" alt="ATIDETO Technologies" class="cert-atideto-logo">
+            </div>
+            <div class="cert-top-right">
+              <img src="assets/msme-logo.png" alt="MSME Registered" class="cert-msme-logo">
+              <span class="udyam-id" id="renderUdyamId"></span>
+            </div>
+          </div>
+
+          <div class="cert-title-block">
+            <p class="cert-eyebrow" id="renderEyebrow">This certifies that</p>
+            <h2 class="cert-title" id="renderTitle">Internship Completion Certificate</h2>
+          </div>
+
+          <div class="cert-name-block">
+            <h3 class="cert-name" id="renderStudentName">Student Name</h3>
+            <div class="cert-underline"></div>
+          </div>
+
+          <div class="cert-domain-wrapper">
+            <p class="cert-domain">
+              Internship Domain&nbsp;: <span id="renderDomain">Course</span>
+            </p>
+          </div>
+
+          <div class="cert-description">
+            <p id="renderDesc1">
+              This Certificate of Completion is proudly awarded in recognition of the successful completion of the
+              internship program at <strong>ATIDETO</strong>. Throughout the internship, the intern demonstrated
+              professionalism, dedication, and a strong commitment to learning while contributing to assigned
+              responsibilities and project objectives.
+            </p>
+            <p id="renderDesc2">
+              The internship was successfully completed from
+              <span id="renderStartDate">Start Date</span> to <span id="renderEndDate">End Date</span> by a student of
+              <strong id="renderCollege">College</strong> (Register No.: <strong id="renderRegisterNo">Register No</strong>).
+              We appreciate the intern's contribution and wish them continued success in their future academic and professional endeavors.
+            </p>
+          </div>
+
+          <div class="cert-bottom">
+            <div class="cert-meta">
+              <p><span>Duration</span><b id="renderDuration">Duration</b></p>
+              <p><span>Issue Date</span><b id="renderIssueDate">Issue Date</b></p>
+              <p><span>Verify ID</span><b id="renderVerifyId">Verify ID</b></p>
+            </div>
+
+            <div class="cert-qr">
+              <img id="renderQrImage" src="assets/qr-placeholder.png" alt="Verification QR Code">
+              <span>Scan to verify</span>
+            </div>
+
+            <div class="cert-signature">
+              <div class="sig-line"></div>
+              <p id="renderSignatory">Founder, ATIDETO Technologies</p>
+            </div>
+          </div>
+
+          <div class="cert-footer">
+            <span><i>&#9993;</i> <span id="renderMail">hello@atideto.com</span></span>
+            <span><i>&#9742;</i> <span id="renderContact">+91 98765 43210</span></span>
+            <span><i>&#127760;</i> <span id="renderWebsite">www.atideto.com</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden offer letter render container matching sample image format -->
+    <div id="offerLetterRenderHost" style="position:fixed; left:-9999px; top:-9999px; width:680px; z-index:-100; overflow:hidden;">
+      <div class="letter" id="offerLetterRender" style="width:680px; aspect-ratio:1023/1537; position:relative; background:#fff; container-type:inline-size; container-name:letter;">
+        <img class="letter-bg" src="assets/background.png?v=2" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:fill; z-index:0;">
+        <div class="letter-inner" style="position:relative; z-index:1; height:100%; width:100%; padding:5.6% 7.2% 4%; display:flex; flex-direction:column; box-sizing:border-box;">
+
+          <div class="letter-header">
+            <img src="assets/atideto-logo.png?v=2" alt="ATIDETO Technologies" class="letter-logo">
+          </div>
+
+          <h1 class="letter-title" id="olRenderTitle">INTERNSHIP OFFER LETTER</h1>
+          <div class="title-divider"></div>
+
+          <div class="meta-row">
+            <p class="offer-no">Offer Letter No. : <span id="olRenderNo">ATIDETO/2026/INT/018</span></p>
+            <p class="offer-date">Date : <span id="olRenderDate">22 June 2026</span></p>
+          </div>
+
+          <div class="recipient-block">
+            <p id="olRenderTo">To,</p>
+            <p class="recipient-name"><span id="olRenderSalutation">Mr./Ms.</span> <span id="olRenderName">Vishnu R</span></p>
+            <p class="recipient-line" id="olRenderCollege">XYZ College of Engineering</p>
+            <p class="recipient-line" id="olRenderEmail">vishnu.r@example.com</p>
+            <p class="recipient-line" id="olRenderPhone">+91 98765 43210</p>
+          </div>
+
+          <p class="dear-line">
+            Dear <span id="olRenderDear">Vishnu R</span>,
+          </p>
+
+          <p class="body-paragraph" id="olRenderIntro">We are pleased to offer you an internship opportunity with ATIDETO Technologies. This internship is designed to provide practical industry exposure, hands-on learning, and real-world project experience while helping you strengthen your technical and professional skills.</p>
+
+          <h2 class="section-heading" id="olRenderDetailsHeading">Internship Details</h2>
+
+          <table class="details-table">
+            <tbody>
+              <tr>
+                <td class="detail-label">Internship Domain</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="olRenderTableDomain">Artificial Intelligence</td>
+              </tr>
+              <tr>
+                <td class="detail-label">Duration</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="olRenderTableDuration">2 Months</td>
+              </tr>
+              <tr>
+                <td class="detail-label">Start Date</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="olRenderTableStartDate">01 June 2026</td>
+              </tr>
+              <tr>
+                <td class="detail-label">End Date</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="olRenderTableEndDate">31 July 2026</td>
+              </tr>
+              <tr>
+                <td class="detail-label">Mode</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="olRenderTableMode">Online</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-divider"></div>
+
+          <p class="body-paragraph" id="olRenderClosing">Upon successful completion of the internship and fulfillment of the program requirements, you will be eligible to receive an Internship Completion Certificate issued by ATIDETO Technologies. We are delighted to welcome you to our team and look forward to supporting your learning and professional growth. We wish you a rewarding and successful internship experience.</p>
+
+          <div class="signature-block">
+            <p class="sincerely">Sincerely,</p>
+            <div class="signature-space"></div>
+            <p class="digital-sig">(Digital Signature)</p>
+            <p class="founder-title">Founder</p>
+            <p class="company-name">ATIDETO Technologies</p>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="letter-footer">
+            <span>📍 Ponnamapet, Salem, Tamil Nadu – 636001</span>
+            <span class="footer-sep">•</span>
+            <span>✉ atideto.in@gmail.com</span>
+            <span class="footer-sep">•</span>
+            <span>☎ +91 XXXXX XXXXX</span>
+            <span class="footer-sep">•</span>
+            <span>🌐 www.atideto.in</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="api.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

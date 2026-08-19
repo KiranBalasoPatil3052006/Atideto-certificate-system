@@ -1,0 +1,12 @@
+{
+  "name": "@atideto/certificate-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "description": "Pure certificate generation engine — PDF, image, QR, ID generation",
+  "dependencies": {
+    "puppeteer": "^24.0.0",
+    "qrcode": "^1.5.4"
+  }
+}

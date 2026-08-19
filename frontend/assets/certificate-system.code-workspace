@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "certificate-system",
+			"path": "../.."
+		},
+		{
+			"name": "offer-letter-generator",
+			"path": "../../../../offer-letter-generator"
+		}
+	],
+	"settings": {}
+}

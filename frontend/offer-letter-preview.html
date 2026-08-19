@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ATIDETO Internship Offer Letter Generator — Create, edit, and download official internship offer letters.">
+<title>ATIDETO Technologies — Internship Offer Letter Generator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="admin-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">ATIDETO <span>Certificate System</span></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="preview.html" class="nav-link">Certificate Preview</a>
+        <a href="offer-letter-preview.html" class="nav-link active">Offer Letter Review</a>
+        <a href="verify.html" class="nav-link">Verify</a>
+      </div>
+    </div>
+  </nav>
+
+<div class="app">
+
+  <!-- ============ LEFT PANEL ============ -->
+  <aside class="editor-panel">
+
+    <div class="editor-header">
+      <img src="assets/atideto-logo.png" alt="ATIDETO" class="editor-logo">
+      <div>
+        <h1>Offer Letter Generator</h1>
+        <p>Two ways to edit — template wording, or student details.</p>
+      </div>
+    </div>
+
+    <!-- ---------- MODE 1 : TEMPLATE / LETTER CONTENT EDITING ---------- -->
+    <section class="panel-block template-block">
+      <div class="panel-block-head">
+        <h2>1. Letter Content <span>(template wording)</span></h2>
+        <p>Use this for text that stays the same across letters — the intro
+          paragraph, closing note, footer, signature wording, etc.</p>
+      </div>
+
+      <button id="toggleEditBtn" class="btn btn-primary btn-block">
+        <span class="btn-icon">✎</span> Edit Letter Content
+      </button>
+
+      <div id="editModeControls" class="edit-mode-controls hidden">
+        <p class="edit-live-hint">✓ Click directly into the highlighted text
+          on the letter (right side) and type your changes.</p>
+        <div class="btn-row">
+          <button id="doneEditBtn" class="btn btn-primary">Done Editing</button>
+          <button id="resetTemplateBtn" class="btn btn-secondary">Reset Wording</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider-line"></div>
+
+    <!-- ---------- MODE 2 : STUDENT DETAILS (NORMAL FORM) ---------- -->
+    <section class="panel-block">
+      <div class="panel-block-head">
+        <h2>2. Student Details <span>(changes every letter)</span></h2>
+        <p>Fill this in for each intern — the letter updates live.</p>
+      </div>
+
+      <div class="field" style="margin-bottom: 4px;">
+        <span>Select Registered Student</span>
+        <select id="studentSelect">
+          <option value="">— Select Registered Student —</option>
+        </select>
+      </div>
+
+      <form id="studentForm" class="editor-form">
+
+        <div class="field-row">
+          <label class="field">
+            <span>Offer Letter No.</span>
+            <input type="text" id="offerNo" value="ATIDETO/2026/INT/018">
+          </label>
+          <label class="field">
+            <span>Date</span>
+            <input type="date" id="offerDate" value="2026-06-22">
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Student Name</span>
+          <input type="text" id="studentName" value="Vishnu R" placeholder="Full name">
+        </label>
+
+        <label class="field">
+          <span>Salutation</span>
+          <select id="salutation">
+            <option value="Mr.">Mr.</option>
+            <option value="Ms.">Ms.</option>
+            <option value="Mr./Ms.">Mr./Ms.</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>College Name</span>
+          <input type="text" id="collegeName" value="XYZ College of Engineering">
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Email ID</span>
+            <input type="text" id="studentEmail" value="vishnu.r@example.com">
+          </label>
+          <label class="field">
+            <span>Mobile Number</span>
+            <input type="text" id="studentMobile" value="+91 98765 43210">
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Internship Domain</span>
+          <input type="text" id="domain" value="Artificial Intelligence">
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Duration</span>
+            <input type="text" id="duration" value="2 Months">
+          </label>
+          <label class="field">
+            <span>Mode</span>
+            <select id="mode">
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Start Date</span>
+            <input type="date" id="startDate" value="2026-06-01">
+          </label>
+          <label class="field">
+            <span>End Date</span>
+            <input type="date" id="endDate" value="2026-07-31">
+          </label>
+        </div>
+
+      </form>
+    </section>
+
+    <div class="editor-actions">
+      <button id="downloadPng" class="btn btn-primary">Download as PNG</button>
+      <button id="downloadPdf" class="btn btn-secondary">Download as PDF</button>
+    </div>
+    <p class="hint">Tip: generate one letter, download it, then just update
+      the Student Details for the next intern. Your template wording edits
+      are remembered automatically.</p>
+  </aside>
+
+  <!-- ============ RIGHT PANEL : LETTER PREVIEW ============ -->
+  <main class="preview-panel">
+    <div class="letter-wrapper">
+      <div class="letter" id="letter">
+
+        <img class="letter-bg" src="assets/background.png?v=2" alt="">
+
+        <div class="letter-inner">
+
+          <!-- header / logo -->
+          <div class="letter-header">
+            <img src="assets/atideto-logo.png?v=2" alt="ATIDETO Technologies" class="letter-logo">
+          </div>
+
+          <!-- title -->
+          <h1 class="letter-title tpl-editable" id="tpl-title" contenteditable="false">INTERNSHIP OFFER LETTER</h1>
+          <div class="title-divider"></div>
+
+          <!-- offer no / date -->
+          <div class="meta-row">
+            <p class="offer-no">Offer Letter No. : <span id="out-offerNo">ATIDETO/2026/INT/018</span></p>
+            <p class="offer-date">Date : <span id="out-offerDate">22 June 2026</span></p>
+          </div>
+
+          <!-- recipient -->
+          <div class="recipient-block">
+            <p class="tpl-editable" id="tpl-to" contenteditable="false">To,</p>
+            <p class="recipient-name"><span id="out-salutation">Mr./Ms.</span> <span id="out-studentName">Vishnu R</span></p>
+            <p class="recipient-line" id="out-collegeName">XYZ College of Engineering</p>
+            <p class="recipient-line" id="out-studentEmail">vishnu.r@example.com</p>
+            <p class="recipient-line" id="out-studentMobile">+91 98765 43210</p>
+          </div>
+
+          <!-- salutation + intro -->
+          <p class="dear-line">
+            <span class="tpl-editable-inline" id="tpl-dear" contenteditable="false">Dear</span> <span id="out-dearName">Vishnu R</span>,
+          </p>
+
+          <p class="body-paragraph tpl-editable" id="tpl-intro" contenteditable="false">We are pleased to offer you an internship opportunity with ATIDETO Technologies. This internship is designed to provide practical industry exposure, hands-on learning, and real-world project experience while helping you strengthen your technical and professional skills.</p>
+
+          <!-- internship details heading -->
+          <h2 class="section-heading tpl-editable" id="tpl-detailsHeading" contenteditable="false">Internship Details</h2>
+
+          <table class="details-table">
+            <tbody>
+              <tr>
+                <td class="detail-label">Internship Domain</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="out-domain">Artificial Intelligence</td>
+              </tr>
+              <tr>
+                <td class="detail-label">Duration</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="out-duration">2 Months</td>
+              </tr>
+              <tr>
+                <td class="detail-label">Start Date</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="out-startDate">01 June 2026</td>
+              </tr>
+              <tr>
+                <td class="detail-label">End Date</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="out-endDate">31 July 2026</td>
+              </tr>
+              <tr>
+                <td class="detail-label">Mode</td>
+                <td class="detail-sep">:</td>
+                <td class="detail-value" id="out-mode">Online</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- closing -->
+          <p class="body-paragraph tpl-editable" id="tpl-closing" contenteditable="false">Upon successful completion of the internship and fulfillment of the program requirements, you will be eligible to receive an Internship Completion Certificate issued by ATIDETO Technologies. We are delighted to welcome you to our team and look forward to supporting your learning and professional growth. We wish you a rewarding and successful internship experience.</p>
+
+          <!-- signature -->
+          <div class="signature-block">
+            <p class="tpl-editable-inline sincerely" id="tpl-sincerely" contenteditable="false">Sincerely,</p>
+            <div class="signature-space"></div>
+            <p class="digital-sig tpl-editable-inline" id="tpl-digitalSig" contenteditable="false">(Digital Signature)</p>
+            <p class="founder-title tpl-editable-inline" id="tpl-founder" contenteditable="false">Founder</p>
+            <p class="company-name tpl-editable-inline" id="tpl-companyName" contenteditable="false">ATIDETO Technologies</p>
+          </div>
+
+          <!-- footer -->
+          <div class="letter-footer">
+            <span class="tpl-editable-inline" id="tpl-footerAddress" contenteditable="false">📍 Ponnamapet, Salem, Tamil Nadu – 636001</span>
+            <span class="footer-sep">•</span>
+            <span class="tpl-editable-inline" id="tpl-footerEmail" contenteditable="false">✉ atideto.in@gmail.com</span>
+            <span class="footer-sep">•</span>
+            <span class="tpl-editable-inline" id="tpl-footerPhone" contenteditable="false">☎ +91 XXXXX XXXXX</span>
+            <span class="footer-sep">•</span>
+            <span class="tpl-editable-inline" id="tpl-footerWebsite" contenteditable="false">🌐 www.atideto.in</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="api.js"></script>
+<script src="offer-letter-preview.js"></script>
+</body>
+</html>
