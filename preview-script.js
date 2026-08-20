@@ -85,8 +85,9 @@ function attachLiveListeners(){
   form.addEventListener("input", (e) => {
     renderAll();
     if(e.target.id === "verifyId" && !$("qrLink").dataset.userEdited){
-      // Keep a sensible default QR link in sync with the Verify ID
-      // unless the user has manually customised the QR link field.
+      const val = e.target.value.trim();
+      $("qrLink").value = val ? `${window.location.origin}/verify?id=${encodeURIComponent(val)}` : "";
+      updateQr();
     }
   });
 
@@ -580,10 +581,9 @@ async function loadStudentData(studentId) {
     $("duration").value = student.durationDays ? student.durationDays + " Days" : "";
     $("issueDate").value = new Date().toISOString().split("T")[0];
 
-    const baseUrl = window.location.origin + "/verify";
     const certId = student.certificateId || "";
     $("verifyId").value = certId;
-    $("qrLink").value = certId ? baseUrl + "/" + certId : "";
+    $("qrLink").value = certId ? `${window.location.origin}/verify?id=${encodeURIComponent(certId)}` : "";
 
     renderAll();
     updateQr();

@@ -17,9 +17,18 @@ function fmtTimestamp(ts) {
   return new Date(ts).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/* Check URL for ?id= parameter on load */
+/* Check URL for ?id= parameter or path /verify/ID on load */
 const params = new URLSearchParams(window.location.search);
-const urlId = params.get('id');
+let urlId = params.get('id') || params.get('certificateId');
+
+if (!urlId) {
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  const verifyIdx = pathParts.indexOf('verify');
+  if (verifyIdx !== -1 && pathParts[verifyIdx + 1] && !pathParts[verifyIdx + 1].includes('.html')) {
+    urlId = decodeURIComponent(pathParts[verifyIdx + 1]);
+  }
+}
+
 if (urlId) {
   $('certIdInput').value = urlId;
   setTimeout(() => doVerify(), 100);
@@ -61,7 +70,7 @@ function renderResult(cert) {
   $('statusBanner').innerHTML = `
     <div class="status-badge ${isValid ? 'valid' : 'revoked'}">
       <span class="status-icon">${isValid ? '✓' : '✗'}</span>
-      ${isValid ? 'Verified Authentic Certificate' : 'Certificate Revoked'}
+      ${isValid ? 'Verified Authentic Person & Certificate' : 'Certificate Revoked'}
       ${isValid ? `<span class="status-count">Verified ${cert.verifiedCount || 0} times</span>` : ''}
     </div>
   `;
@@ -70,7 +79,7 @@ function renderResult(cert) {
   const startD = cert.startDate || '';
   const endD = cert.endDate || '';
   const issueD = cert.issuedAt ? new Date(cert.issuedAt.toDate ? cert.issuedAt.toDate() : cert.issuedAt).toISOString().split('T')[0] : '';
-  const qrUrl = cert.verificationUrl || `${window.location.origin}/verify/${cert.certificateId}`;
+  const qrUrl = cert.verificationUrl || `${window.location.origin}/verify?id=${encodeURIComponent(cert.certificateId)}`;
   const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(qrUrl)}`;
 
   $('certPreviewWrap').innerHTML = `
