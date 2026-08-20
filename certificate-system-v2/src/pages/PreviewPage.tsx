@@ -34,16 +34,16 @@ const DEFAULT_FORM: CertificateFormData = {
 
 const DEFAULT_TYPOGRAPHY: TypographySettings = {
   studentNameFont: 'Cormorant Garamond',
-  studentNameSize: 42,
-  studentNameColor: '#0b1d3a',
+  studentNameSize: 44,
+  studentNameColor: '#12539c',
   studentNameItalic: true,
   studentNameWeight: '600',
   titleFont: 'Playfair Display',
-  titleColor: '#0a192f',
-  domainColor: '#2F2FE4',
+  titleColor: '#0b2545',
+  domainColor: '#12539c',
   descriptionFont: 'Inter',
   metaFont: 'Inter',
-  letterSpacing: 0,
+  letterSpacing: 1,
 };
 
 const DEFAULT_COMPANY_TEMPLATE: CompanyTemplateSettings = {
