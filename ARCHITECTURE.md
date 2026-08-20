@@ -88,4 +88,3 @@ flowchart TD
 ---
 
 *© 2026 ATIDETO Technologies. All Rights Reserved.*
-issue showing in certificate system frontend on certificate preview page  is Error: Invalid or missing CSRF token when i cliked on generate through backend
