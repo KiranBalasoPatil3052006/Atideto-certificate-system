@@ -66,6 +66,20 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
 
   const eyebrow = companyTemplate?.eyebrow || 'This certifies that';
   const mainTitle = companyTemplate?.mainTitle || 'Internship Completion Certificate';
+  const domainPrefix = companyTemplate?.domainPrefix || 'Internship Domain :';
+  const p1Text =
+    companyTemplate?.descriptionParagraph1 ||
+    'This Certificate of Completion is proudly awarded in recognition of the successful completion of the internship program at ATIDETO. Throughout the internship, the intern demonstrated professionalism, dedication, and a strong commitment to learning while contributing to assigned responsibilities and project objectives.';
+  const p2Prefix = companyTemplate?.descriptionParagraph2Prefix || 'The internship was successfully completed from';
+  const p2Mid = companyTemplate?.descriptionParagraph2Mid || 'by a student of';
+  const p2Suffix =
+    companyTemplate?.descriptionParagraph2Suffix ||
+    '. We appreciate the intern\'s contribution and wish them continued success in their future academic and professional endeavors.';
+  const durationLabel = companyTemplate?.durationLabel || 'Duration';
+  const issueDateLabel = companyTemplate?.issueDateLabel || 'Issue Date';
+  const verifyIdLabel = companyTemplate?.verifyIdLabel || 'Verify ID';
+  const qrCaption = companyTemplate?.qrCaption || 'Scan to verify';
+
   const udyamId = companyTemplate?.udyamId || 'UDYAM-TN-20-0242534';
   const founderDesignation = companyTemplate?.founderDesignation || 'Founder, ATIDETO Technologies';
   const email = companyTemplate?.email || 'hello@atideto.com';
@@ -179,7 +193,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             }}
           >
             <span className="text-[10px] sm:text-[12px] md:text-[13.5px] font-semibold text-[#0b2545]">
-              Internship Domain&nbsp;:&nbsp;
+              {domainPrefix}&nbsp;:&nbsp;
               <span className="font-bold" style={{ color: domainStyle.color || '#1f6fd6', fontWeight: domainStyle.fontWeight || '700' }}>
                 {data.course || 'Domain / Course'}
               </span>
@@ -192,24 +206,18 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
           className="text-center space-y-1.5 sm:space-y-2 text-[9px] sm:text-[11px] md:text-[12px] leading-relaxed px-2 sm:px-6 max-w-[94%] mx-auto"
           style={{ fontFamily: descStyle.fontFamily || "'Inter', sans-serif", color: descStyle.color || '#333d4a' }}
         >
+          <p className="m-0">{p1Text}</p>
           <p className="m-0">
-            This Certificate of Completion is proudly awarded in recognition of the successful completion of the
-            internship program at <strong className="font-bold text-[#0b2545]">ATIDETO</strong>. Throughout the
-            internship, the intern demonstrated professionalism, dedication, and a strong commitment to learning while
-            contributing to assigned responsibilities and project objectives.
-          </p>
-          <p className="m-0">
-            The internship was successfully completed from{' '}
+            {p2Prefix}{' '}
             <span className="font-bold text-[#1f6fd6]">{formatDate(data.startDate)}</span> to{' '}
-            <span className="font-bold text-[#1f6fd6]">{formatDate(data.endDate)}</span> by a student of{' '}
+            <span className="font-bold text-[#1f6fd6]">{formatDate(data.endDate)}</span> {p2Mid}{' '}
             <strong className="font-bold text-[#0b2545]">{data.college || '—'}</strong>
             {data.registerNo ? (
               <>
                 {' '}(Register No.: <strong className="font-bold text-[#0b2545]">{data.registerNo}</strong>)
               </>
             ) : null}
-            . We appreciate the intern's contribution and wish them continued success in their future academic and
-            professional endeavors.
+            {p2Suffix}
           </p>
         </div>
 
@@ -218,15 +226,15 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
           {/* Left Meta Table */}
           <div className="space-y-0.5 text-[8.5px] sm:text-[10px] md:text-[11px]">
             <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
-              <span className="font-semibold text-[#0b2545]">Duration</span>
+              <span className="font-semibold text-[#0b2545]">{durationLabel}</span>
               <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{data.duration || '—'}</b>
             </div>
             <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
-              <span className="font-semibold text-[#0b2545]">Issue Date</span>
+              <span className="font-semibold text-[#0b2545]">{issueDateLabel}</span>
               <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{formatDate(data.issueDate)}</b>
             </div>
             <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
-              <span className="font-semibold text-[#0b2545]">Verify ID</span>
+              <span className="font-semibold text-[#0b2545]">{verifyIdLabel}</span>
               <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{data.verifyId || '—'}</b>
             </div>
           </div>
@@ -242,7 +250,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
               />
             </div>
             <span className="text-[7.5px] sm:text-[9px] font-medium text-[#5c7595] mt-0.5">
-              Scan to verify
+              {qrCaption}
             </span>
           </div>
 

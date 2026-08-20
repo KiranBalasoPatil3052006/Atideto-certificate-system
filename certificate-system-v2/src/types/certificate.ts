@@ -55,7 +55,13 @@ export interface CompanyTemplateSettings {
   mainTitle: string;
   domainPrefix: string;
   descriptionParagraph1: string;
-  descriptionParagraph2: string;
+  descriptionParagraph2Prefix: string;
+  descriptionParagraph2Mid: string;
+  descriptionParagraph2Suffix: string;
+  durationLabel: string;
+  issueDateLabel: string;
+  verifyIdLabel: string;
+  qrCaption: string;
   founderDesignation: string;
   companyName: string;
   udyamId: string;

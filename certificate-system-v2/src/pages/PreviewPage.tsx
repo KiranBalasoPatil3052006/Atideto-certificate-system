@@ -50,8 +50,16 @@ const DEFAULT_COMPANY_TEMPLATE: CompanyTemplateSettings = {
   eyebrow: 'This certifies that',
   mainTitle: 'Internship Completion Certificate',
   domainPrefix: 'Internship Domain',
-  descriptionParagraph1: '',
-  descriptionParagraph2: '',
+  descriptionParagraph1:
+    'This Certificate of Completion is proudly awarded in recognition of the successful completion of the internship program at ATIDETO. Throughout the internship, the intern demonstrated professionalism, dedication, and a strong commitment to learning while contributing to assigned responsibilities and project objectives.',
+  descriptionParagraph2Prefix: 'The internship was successfully completed from',
+  descriptionParagraph2Mid: 'by a student of',
+  descriptionParagraph2Suffix:
+    '. We appreciate the intern\'s contribution and wish them continued success in their future academic and professional endeavors.',
+  durationLabel: 'Duration',
+  issueDateLabel: 'Issue Date',
+  verifyIdLabel: 'Verify ID',
+  qrCaption: 'Scan to verify',
   founderDesignation: 'Founder, ATIDETO Technologies',
   companyName: 'ATIDETO Technologies',
   udyamId: 'UDYAM-TN-20-0242534',
