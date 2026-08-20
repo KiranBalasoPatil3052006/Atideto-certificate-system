@@ -3,6 +3,9 @@
    Design System: Light Mode, Inter, Blue/Gray Palette
    ================================================================= */
 
+/* --- Utility Classes --- */
+.hidden { display: none !important; }
+
 /* --- Design Tokens --- */
 :root {
   /* Colors */
