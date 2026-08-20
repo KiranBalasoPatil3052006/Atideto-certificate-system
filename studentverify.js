@@ -117,7 +117,7 @@ function renderVerifiedStudentView(cert) {
   const startD = cert.startDate || '';
   const endD = cert.endDate || '';
   const issueD = cert.issuedAt ? new Date(cert.issuedAt.toDate ? cert.issuedAt.toDate() : cert.issuedAt).toISOString().split('T')[0] : '';
-  const qrUrl = `https://atideto-certificate-system.vercel.app/studentverify.html?id=${encodeURIComponent(targetId)}`;
+  const qrUrl = `https://atideto-certificate-system.vercel.app/?id=${encodeURIComponent(targetId)}`;
   const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(qrUrl)}`;
 
   $('certPreviewWrap').innerHTML = `

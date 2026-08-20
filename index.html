@@ -10,6 +10,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Playfair+Display:wght@800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="index.css">
 <link rel="stylesheet" href="style.css">
+<script>
+  if (new URLSearchParams(window.location.search).has('id')) {
+    window.location.replace('/studentverify.html' + window.location.search);
+  }
+</script>
 </head>
 <body>
   <nav class="admin-nav hidden" id="adminNav">
