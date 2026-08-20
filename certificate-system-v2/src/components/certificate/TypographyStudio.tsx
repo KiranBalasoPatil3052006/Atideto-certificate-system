@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Sparkles, RefreshCw, Type, Palette } from 'lucide-react';
-import { TypographySettings } from '../../types/certificate';
+import { X, Sparkles, RefreshCw, Search, Check } from 'lucide-react';
+import { TypographySettings, ElementStyle } from '../../types/certificate';
 import { loadGoogleFont } from '../../lib/fontLoader';
 
 interface TypographyStudioProps {
@@ -11,106 +11,142 @@ interface TypographyStudioProps {
   onReset: () => void;
 }
 
-const FONT_OPTIONS = [
+export type TargetElemKey =
+  | 'certName'
+  | 'certTitle'
+  | 'certEyebrow'
+  | 'certDomain'
+  | 'certDesc'
+  | 'certSignatory'
+  | 'certMeta';
+
+const ELEMENT_TARGETS: { key: TargetElemKey; label: string }[] = [
+  { key: 'certName', label: 'Student Name' },
+  { key: 'certTitle', label: 'Certificate Title' },
+  { key: 'certEyebrow', label: 'Eyebrow ("This certifies...")' },
+  { key: 'certDomain', label: 'Domain Badge' },
+  { key: 'certDesc', label: 'Description Text' },
+  { key: 'certSignatory', label: 'Signatory Name' },
+  { key: 'certMeta', label: 'IDs & Metadata' },
+];
+
+const GOOGLE_FONTS_CATALOG = [
   { name: 'Cormorant Garamond', category: 'Serif' },
   { name: 'Playfair Display', category: 'Serif' },
   { name: 'Cinzel', category: 'Serif' },
+  { name: 'Bodoni Moda', category: 'Serif' },
   { name: 'Lora', category: 'Serif' },
-  { name: 'Great Vibes', category: 'Script & Calligraphy' },
-  { name: 'Tangerine', category: 'Script & Calligraphy' },
-  { name: 'Alex Brush', category: 'Script & Calligraphy' },
-  { name: 'Sacramento', category: 'Script & Calligraphy' },
-  { name: 'Caveat', category: 'Script & Calligraphy' },
+  { name: 'Merriweather', category: 'Serif' },
+  { name: 'Spectral', category: 'Serif' },
+  { name: 'Prata', category: 'Serif' },
+  { name: 'Great Vibes', category: 'Calligraphy & Script' },
+  { name: 'Dancing Script', category: 'Calligraphy & Script' },
+  { name: 'Alex Brush', category: 'Calligraphy & Script' },
+  { name: 'Tangerine', category: 'Calligraphy & Script' },
+  { name: 'Parisienne', category: 'Calligraphy & Script' },
+  { name: 'Sacramento', category: 'Calligraphy & Script' },
+  { name: 'Satisfy', category: 'Calligraphy & Script' },
+  { name: 'Allura', category: 'Calligraphy & Script' },
   { name: 'Inter', category: 'Sans-Serif' },
+  { name: 'Roboto', category: 'Sans-Serif' },
   { name: 'Montserrat', category: 'Sans-Serif' },
+  { name: 'Poppins', category: 'Sans-Serif' },
+  { name: 'Outfit', category: 'Sans-Serif' },
+  { name: 'Raleway', category: 'Sans-Serif' },
+  { name: 'Plus Jakarta Sans', category: 'Sans-Serif' },
   { name: 'JetBrains Mono', category: 'Monospace' },
 ];
 
 const PRESET_SWATCHES = [
-  '#0b1d3a', '#0a192f', '#2F2FE4', '#1E40AF', '#059669',
-  '#B45309', '#DC2626', '#4C1D95', '#0F172A', '#64748B'
+  { color: '#0b2545', label: 'Navy' },
+  { color: '#12539c', label: 'Royal Blue' },
+  { color: '#a8791f', label: 'Gold' },
+  { color: '#0d5c3a', label: 'Emerald' },
+  { color: '#6b1224', label: 'Burgundy' },
+  { color: '#1b232e', label: 'Charcoal' },
+  { color: '#000000', label: 'Black' },
 ];
 
-const PRESET_THEMES = [
+const PRESET_THEMES: { name: string; tag: string; desc: string; apply: (curr: TypographySettings) => TypographySettings }[] = [
   {
-    name: 'Classic Gold',
-    settings: {
+    name: 'Classic Gold & Navy',
+    tag: 'Royal',
+    desc: 'Cormorant Garamond + Playfair Display + Gold accents',
+    apply: (curr) => ({
+      ...curr,
       studentNameFont: 'Cormorant Garamond',
-      studentNameSize: 42,
-      studentNameColor: '#0b1d3a',
+      studentNameSize: 44,
+      studentNameColor: '#12539c',
       studentNameItalic: true,
       studentNameWeight: '600',
       titleFont: 'Playfair Display',
-      titleColor: '#0a192f',
-      domainColor: '#2F2FE4',
-      descriptionFont: 'Inter',
-      metaFont: 'Inter',
-      letterSpacing: 0,
-    },
+      titleColor: '#0b2545',
+      domainColor: '#12539c',
+    }),
   },
   {
-    name: 'Calligraphy Script',
-    settings: {
+    name: 'Calligraphic Script',
+    tag: 'Script',
+    desc: 'Great Vibes Script + Bodoni Serif + Burgundy accents',
+    apply: (curr) => ({
+      ...curr,
       studentNameFont: 'Great Vibes',
       studentNameSize: 50,
-      studentNameColor: '#1E40AF',
+      studentNameColor: '#6b1224',
       studentNameItalic: false,
       studentNameWeight: '400',
-      titleFont: 'Playfair Display',
-      titleColor: '#0F172A',
-      domainColor: '#2F2FE4',
-      descriptionFont: 'Inter',
-      metaFont: 'Inter',
-      letterSpacing: 1,
-    },
+      titleFont: 'Bodoni Moda',
+      titleColor: '#0b2545',
+      domainColor: '#6b1224',
+    }),
   },
   {
     name: 'Modern Minimalist',
-    settings: {
-      studentNameFont: 'Inter',
+    tag: 'Clean',
+    desc: 'Montserrat + Inter + Emerald Green accents',
+    apply: (curr) => ({
+      ...curr,
+      studentNameFont: 'Montserrat',
       studentNameSize: 34,
-      studentNameColor: '#0F172A',
+      studentNameColor: '#0d5c3a',
       studentNameItalic: false,
       studentNameWeight: '700',
-      titleFont: 'Montserrat',
-      titleColor: '#1E293B',
-      domainColor: '#2563EB',
-      descriptionFont: 'Inter',
-      metaFont: 'Inter',
-      letterSpacing: 0.5,
-    },
+      titleFont: 'Poppins',
+      titleColor: '#0b2545',
+      domainColor: '#0d5c3a',
+    }),
   },
   {
     name: 'Vintage Elegance',
-    settings: {
-      studentNameFont: 'Alex Brush',
-      studentNameSize: 46,
-      studentNameColor: '#78350F',
-      studentNameItalic: false,
-      studentNameWeight: '400',
+    tag: 'Regal',
+    desc: 'Cinzel + Tangerine + Deep Gold',
+    apply: (curr) => ({
+      ...curr,
+      studentNameFont: 'Tangerine',
+      studentNameSize: 48,
+      studentNameColor: '#a8791f',
+      studentNameItalic: true,
+      studentNameWeight: '700',
       titleFont: 'Cinzel',
-      titleColor: '#451A03',
-      domainColor: '#B45309',
-      descriptionFont: 'Lora',
-      metaFont: 'Lora',
-      letterSpacing: 0,
-    },
+      titleColor: '#0b2545',
+      domainColor: '#a8791f',
+    }),
   },
   {
     name: 'Tech Monospace',
-    settings: {
+    tag: 'Cyber',
+    desc: 'JetBrains Mono + Outfit + Sapphire Blue',
+    apply: (curr) => ({
+      ...curr,
       studentNameFont: 'JetBrains Mono',
       studentNameSize: 32,
-      studentNameColor: '#0F172A',
+      studentNameColor: '#1f6fd6',
       studentNameItalic: false,
       studentNameWeight: '700',
-      titleFont: 'Montserrat',
-      titleColor: '#0284C7',
-      domainColor: '#0284C7',
-      descriptionFont: 'Inter',
-      metaFont: 'JetBrains Mono',
-      letterSpacing: 0,
-    },
+      titleFont: 'Outfit',
+      titleColor: '#0b2545',
+      domainColor: '#1f6fd6',
+    }),
   },
 ];
 
@@ -121,264 +157,468 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
   onChange,
   onReset,
 }) => {
-  const [activeElement, setActiveElement] = useState<'studentName' | 'title' | 'domain'>('studentName');
+  const [activeTab, setActiveTab] = useState<'elements' | 'themes' | 'fonts'>('elements');
+  const [activeElem, setActiveElem] = useState<TargetElemKey>('certName');
+  const [customFontInput, setCustomFontInput] = useState('');
+  const [fontSearchInput, setFontSearchInput] = useState('');
 
   if (!isOpen) return null;
 
-  const handleFontSelect = (font: string) => {
-    loadGoogleFont(font);
-    if (activeElement === 'studentName') {
-      onChange({ ...typography, studentNameFont: font });
-    } else if (activeElement === 'title') {
-      onChange({ ...typography, titleFont: font });
+  // Get current styles for the selected element
+  const getElemStyle = (key: TargetElemKey): ElementStyle => {
+    if (key === 'certName') {
+      return (
+        typography.certName || {
+          fontFamily: typography.studentNameFont || 'Cormorant Garamond',
+          fontSize: typography.studentNameSize || 44,
+          fontWeight: typography.studentNameWeight || '600',
+          fontStyle: typography.studentNameItalic !== false ? 'italic' : 'normal',
+          color: typography.studentNameColor || '#12539c',
+          letterSpacing: typography.letterSpacing || 1,
+        }
+      );
     }
+    if (key === 'certTitle') {
+      return (
+        typography.certTitle || {
+          fontFamily: typography.titleFont || 'Playfair Display',
+          fontSize: 32,
+          fontWeight: '800',
+          fontStyle: 'normal',
+          color: typography.titleColor || '#0b2545',
+          letterSpacing: 0.3,
+        }
+      );
+    }
+    if (key === 'certDomain') {
+      return (
+        typography.certDomain || {
+          fontFamily: 'Inter',
+          fontSize: 12.5,
+          fontWeight: '700',
+          fontStyle: 'normal',
+          color: typography.domainColor || '#12539c',
+          letterSpacing: 0.4,
+        }
+      );
+    }
+    if (key === 'certEyebrow') {
+      return (
+        typography.certEyebrow || {
+          fontFamily: 'Inter',
+          fontSize: 12,
+          fontWeight: '700',
+          fontStyle: 'normal',
+          color: '#5c7595',
+          letterSpacing: 3,
+        }
+      );
+    }
+    if (key === 'certDesc') {
+      return (
+        typography.certDesc || {
+          fontFamily: typography.descriptionFont || 'Inter',
+          fontSize: 12,
+          fontWeight: '400',
+          fontStyle: 'normal',
+          color: '#333d4a',
+          letterSpacing: 0,
+        }
+      );
+    }
+    if (key === 'certSignatory') {
+      return (
+        typography.certSignatory || {
+          fontFamily: 'Inter',
+          fontSize: 11,
+          fontWeight: '600',
+          fontStyle: 'normal',
+          color: '#0b2545',
+          letterSpacing: 0,
+        }
+      );
+    }
+    // certMeta
+    return (
+      typography.certMeta || {
+        fontFamily: typography.metaFont || 'JetBrains Mono',
+        fontSize: 10.5,
+        fontWeight: '600',
+        fontStyle: 'normal',
+        color: '#000000',
+        letterSpacing: 0.2,
+      }
+    );
   };
 
-  const handleColorSelect = (color: string) => {
-    if (activeElement === 'studentName') {
-      onChange({ ...typography, studentNameColor: color });
-    } else if (activeElement === 'title') {
-      onChange({ ...typography, titleColor: color });
-    } else if (activeElement === 'domain') {
-      onChange({ ...typography, domainColor: color });
+  const currentStyle = getElemStyle(activeElem);
+
+  const updateActiveElemStyle = (patch: Partial<ElementStyle>) => {
+    const updated = { ...currentStyle, ...patch };
+
+    const newSettings: TypographySettings = {
+      ...typography,
+      [activeElem]: updated,
+    };
+
+    // Keep legacy top-level props in sync for backwards compatibility
+    if (activeElem === 'certName') {
+      if (patch.fontFamily) newSettings.studentNameFont = patch.fontFamily;
+      if (patch.fontSize) newSettings.studentNameSize = patch.fontSize;
+      if (patch.color) newSettings.studentNameColor = patch.color;
+      if (patch.fontStyle !== undefined) newSettings.studentNameItalic = patch.fontStyle === 'italic';
+      if (patch.fontWeight) newSettings.studentNameWeight = patch.fontWeight;
+      if (patch.letterSpacing !== undefined) newSettings.letterSpacing = patch.letterSpacing;
+    } else if (activeElem === 'certTitle') {
+      if (patch.fontFamily) newSettings.titleFont = patch.fontFamily;
+      if (patch.color) newSettings.titleColor = patch.color;
+    } else if (activeElem === 'certDomain') {
+      if (patch.color) newSettings.domainColor = patch.color;
     }
+
+    onChange(newSettings);
+  };
+
+  const handleFontChange = (fontName: string) => {
+    if (!fontName) return;
+    loadGoogleFont(fontName);
+    updateActiveElemStyle({ fontFamily: fontName });
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50/80">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-[#2F2FE4]/10 text-[#2F2FE4]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-2xl bg-[#2F2FE4]/10 text-[#2F2FE4] border border-[#2F2FE4]/20">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-slate-900">Typography Studio</h3>
-              <p className="text-xs text-slate-500">Customize fonts, colors, styling and preset themes</p>
+              <h3 className="font-extrabold text-base text-slate-900">Certificate Design & Typography Studio</h3>
+              <p className="text-xs text-slate-500">Customize fonts, sizes, colors and preset themes with live preview</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1">
-          {/* Preset Themes */}
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
-              1-Click Style Themes
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {PRESET_THEMES.map((theme) => (
-                <button
-                  key={theme.name}
-                  onClick={() => {
-                    loadGoogleFont(theme.settings.studentNameFont);
-                    loadGoogleFont(theme.settings.titleFont);
-                    onChange(theme.settings);
-                  }}
-                  className="p-3 rounded-xl border border-slate-200 hover:border-[#2F2FE4] hover:bg-[#2F2FE4]/5 text-left transition-all group"
-                >
-                  <p className="font-semibold text-xs text-slate-800 group-hover:text-[#2F2FE4]">{theme.name}</p>
-                  <p className="text-[11px] text-slate-500 truncate mt-0.5">{theme.settings.studentNameFont}</p>
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Tab Buttons */}
+        <div className="flex border-b border-slate-200 bg-slate-100/60 px-6 pt-3 gap-2">
+          <button
+            onClick={() => setActiveTab('elements')}
+            className={`py-2 px-4 rounded-t-xl text-xs font-bold transition-all border-t border-x ${
+              activeTab === 'elements'
+                ? 'bg-white text-[#2F2FE4] border-slate-200 shadow-sm'
+                : 'border-transparent text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Element Styling
+          </button>
+          <button
+            onClick={() => setActiveTab('themes')}
+            className={`py-2 px-4 rounded-t-xl text-xs font-bold transition-all border-t border-x ${
+              activeTab === 'themes'
+                ? 'bg-white text-[#2F2FE4] border-slate-200 shadow-sm'
+                : 'border-transparent text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Preset Themes
+          </button>
+          <button
+            onClick={() => setActiveTab('fonts')}
+            className={`py-2 px-4 rounded-t-xl text-xs font-bold transition-all border-t border-x ${
+              activeTab === 'fonts'
+                ? 'bg-white text-[#2F2FE4] border-slate-200 shadow-sm'
+                : 'border-transparent text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Fonts Explorer
+          </button>
+        </div>
 
-          {/* Element Tabs */}
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
-              Choose Element to Edit
-            </label>
-            <div className="flex rounded-xl bg-slate-100 p-1">
-              <button
-                onClick={() => setActiveElement('studentName')}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-                  activeElement === 'studentName'
-                    ? 'bg-white text-[#2F2FE4] shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Student Name
-              </button>
-              <button
-                onClick={() => setActiveElement('title')}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-                  activeElement === 'title'
-                    ? 'bg-white text-[#2F2FE4] shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Main Title
-              </button>
-              <button
-                onClick={() => setActiveElement('domain')}
-                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-                  activeElement === 'domain'
-                    ? 'bg-white text-[#2F2FE4] shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                Domain Accent
-              </button>
-            </div>
-          </div>
-
-          {/* Font Picker (For Student Name & Title) */}
-          {activeElement !== 'domain' && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                  <Type className="w-3.5 h-3.5 text-[#2F2FE4]" />
-                  Font Family
+        {/* Modal Content Body */}
+        <div className="p-6 overflow-y-auto space-y-6 flex-1 text-xs">
+          {/* TAB 1: Element Styling */}
+          {activeTab === 'elements' && (
+            <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-start">
+              {/* Element Picker Sidebar */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
+                  Select Element
                 </label>
-                <span className="text-xs font-semibold text-[#2F2FE4]">
-                  {activeElement === 'studentName' ? typography.studentNameFont : typography.titleFont}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {FONT_OPTIONS.map((f) => {
-                  const isSelected =
-                    (activeElement === 'studentName' && typography.studentNameFont === f.name) ||
-                    (activeElement === 'title' && typography.titleFont === f.name);
-                  return (
-                    <button
-                      key={f.name}
-                      onClick={() => handleFontSelect(f.name)}
-                      className={`p-2.5 rounded-xl border text-left transition-all ${
-                        isSelected
-                          ? 'border-[#2F2FE4] bg-[#2F2FE4]/10 text-[#2F2FE4] font-bold shadow-sm'
-                          : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
-                      }`}
-                    >
-                      <span className="text-sm block truncate" style={{ fontFamily: f.name }}>
-                        {f.name}
-                      </span>
-                      <span className="text-[10px] text-slate-400 block">{f.category}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Font Controls (Size, Style, Weight for Student Name) */}
-          {activeElement === 'studentName' && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-              {/* Size */}
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Font Size ({typography.studentNameSize}px)</label>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => onChange({ ...typography, studentNameSize: Math.max(24, typography.studentNameSize - 2) })}
-                    className="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold hover:bg-slate-100"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="range"
-                    min={24}
-                    max={64}
-                    value={typography.studentNameSize}
-                    onChange={(e) => onChange({ ...typography, studentNameSize: Number(e.target.value) })}
-                    className="flex-1"
-                  />
-                  <button
-                    onClick={() => onChange({ ...typography, studentNameSize: Math.min(64, typography.studentNameSize + 2) })}
-                    className="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold hover:bg-slate-100"
-                  >
-                    +
-                  </button>
+                <div className="flex flex-col gap-1">
+                  {ELEMENT_TARGETS.map((elem) => {
+                    const isActive = activeElem === elem.key;
+                    return (
+                      <button
+                        key={elem.key}
+                        onClick={() => setActiveElem(elem.key)}
+                        className={`py-2.5 px-3 rounded-xl text-left font-semibold text-xs transition-all ${
+                          isActive
+                            ? 'bg-[#2F2FE4] text-white shadow-md shadow-[#2F2FE4]/20'
+                            : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'
+                        }`}
+                      >
+                        {elem.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Italic */}
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Font Style</label>
-                <button
-                  onClick={() => onChange({ ...typography, studentNameItalic: !typography.studentNameItalic })}
-                  className={`w-full py-1.5 px-3 rounded-lg border text-xs font-bold transition-all ${
-                    typography.studentNameItalic
-                      ? 'bg-[#2F2FE4] text-white border-[#2F2FE4]'
-                      : 'bg-white text-slate-700 border-slate-300'
-                  }`}
-                >
-                  {typography.studentNameItalic ? 'Italic Active' : 'Normal Text'}
-                </button>
-              </div>
+              {/* Element Style Controls */}
+              <div className="bg-slate-50/70 p-5 rounded-2xl border border-slate-200 space-y-5">
+                <h4 className="font-extrabold text-sm text-slate-900 border-b border-slate-200 pb-2">
+                  {ELEMENT_TARGETS.find((e) => e.key === activeElem)?.label} Styling
+                </h4>
 
-              {/* Letter Spacing */}
-              <div>
-                <label className="text-xs font-bold text-slate-600 mb-1 block">Tracking ({typography.letterSpacing}px)</label>
-                <input
-                  type="range"
-                  min={0}
-                  max={6}
-                  step={0.5}
-                  value={typography.letterSpacing}
-                  onChange={(e) => onChange({ ...typography, letterSpacing: Number(e.target.value) })}
-                  className="w-full mt-2"
-                />
+                {/* Font Family Dropdown & Custom Google Font Input */}
+                <div className="space-y-2">
+                  <label className="font-bold text-slate-700 block">Font Family</label>
+                  <select
+                    value={currentStyle.fontFamily}
+                    onChange={(e) => handleFontChange(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold text-xs focus:border-[#2F2FE4]"
+                  >
+                    <optgroup label="Serif (Classic & Regal)">
+                      <option value="Cormorant Garamond">Cormorant Garamond</option>
+                      <option value="Playfair Display">Playfair Display</option>
+                      <option value="Cinzel">Cinzel</option>
+                      <option value="Bodoni Moda">Bodoni Moda</option>
+                      <option value="Lora">Lora</option>
+                      <option value="Merriweather">Merriweather</option>
+                      <option value="Spectral">Spectral</option>
+                      <option value="Prata">Prata</option>
+                    </optgroup>
+                    <optgroup label="Calligraphy & Script">
+                      <option value="Great Vibes">Great Vibes</option>
+                      <option value="Dancing Script">Dancing Script</option>
+                      <option value="Alex Brush">Alex Brush</option>
+                      <option value="Tangerine">Tangerine</option>
+                      <option value="Parisienne">Parisienne</option>
+                      <option value="Sacramento">Sacramento</option>
+                      <option value="Satisfy">Satisfy</option>
+                      <option value="Allura">Allura</option>
+                    </optgroup>
+                    <optgroup label="Sans-Serif (Clean & Modern)">
+                      <option value="Inter">Inter</option>
+                      <option value="Roboto">Roboto</option>
+                      <option value="Montserrat">Montserrat</option>
+                      <option value="Poppins">Poppins</option>
+                      <option value="Outfit">Outfit</option>
+                      <option value="Raleway">Raleway</option>
+                      <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+                      <option value="Lato">Lato</option>
+                    </optgroup>
+                    <optgroup label="Monospace">
+                      <option value="JetBrains Mono">JetBrains Mono</option>
+                    </optgroup>
+                  </select>
+
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Or type ANY Google Font (e.g. Tangerine)"
+                      value={customFontInput}
+                      onChange={(e) => setCustomFontInput(e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
+                    />
+                    <button
+                      onClick={() => handleFontChange(customFontInput)}
+                      disabled={!customFontInput.trim()}
+                      className="px-4 py-2 rounded-xl bg-[#2F2FE4] text-white font-bold text-xs disabled:opacity-50"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+
+                {/* Color & Style Controls */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Font Color</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={currentStyle.color}
+                        onChange={(e) => updateActiveElemStyle({ color: e.target.value })}
+                        className="w-9 h-9 rounded-lg border border-slate-300 cursor-pointer bg-white"
+                      />
+                      <input
+                        type="text"
+                        value={currentStyle.color}
+                        onChange={(e) => updateActiveElemStyle({ color: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs uppercase bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Font Style</label>
+                    <button
+                      onClick={() =>
+                        updateActiveElemStyle({ fontStyle: currentStyle.fontStyle === 'italic' ? 'normal' : 'italic' })
+                      }
+                      className={`w-full py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                        currentStyle.fontStyle === 'italic'
+                          ? 'bg-[#2F2FE4] text-white border-[#2F2FE4]'
+                          : 'bg-white text-slate-700 border-slate-300'
+                      }`}
+                    >
+                      <i>I</i> Italic {currentStyle.fontStyle === 'italic' ? '(Active)' : ''}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Font Size & Weight */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">
+                      Font Size ({currentStyle.fontSize || 16}px)
+                    </label>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() =>
+                          updateActiveElemStyle({ fontSize: Math.max(8, (currentStyle.fontSize || 16) - 1) })
+                        }
+                        className="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold hover:bg-slate-100"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="range"
+                        min={8}
+                        max={72}
+                        value={currentStyle.fontSize || 16}
+                        onChange={(e) => updateActiveElemStyle({ fontSize: Number(e.target.value) })}
+                        className="flex-1"
+                      />
+                      <button
+                        onClick={() =>
+                          updateActiveElemStyle({ fontSize: Math.min(72, (currentStyle.fontSize || 16) + 1) })
+                        }
+                        className="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold hover:bg-slate-100"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="font-bold text-slate-700 block mb-1">Font Weight</label>
+                    <select
+                      value={currentStyle.fontWeight}
+                      onChange={(e) => updateActiveElemStyle({ fontWeight: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold text-xs"
+                    >
+                      <option value="400">Regular (400)</option>
+                      <option value="500">Medium (500)</option>
+                      <option value="600">SemiBold (600)</option>
+                      <option value="700">Bold (700)</option>
+                      <option value="800">ExtraBold (800)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Color Swatches */}
+                <div className="space-y-1.5 pt-2 border-t border-slate-200">
+                  <label className="font-bold text-slate-700 block">Color Swatches</label>
+                  <div className="flex flex-wrap gap-2">
+                    {PRESET_SWATCHES.map((sw) => (
+                      <button
+                        key={sw.color}
+                        onClick={() => updateActiveElemStyle({ color: sw.color })}
+                        className="w-8 h-8 rounded-full border-2 border-white shadow-md hover:scale-110 transition-transform cursor-pointer"
+                        style={{ backgroundColor: sw.color }}
+                        title={sw.label}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Color Swatches */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-[#2F2FE4]" />
-                Color Palette
-              </label>
-            </div>
-            <div className="flex flex-wrap items-center gap-2.5">
-              {PRESET_SWATCHES.map((swatch) => (
-                <button
-                  key={swatch}
-                  onClick={() => handleColorSelect(swatch)}
-                  className="w-8 h-8 rounded-full border-2 border-white shadow-md transition-transform hover:scale-110 active:scale-95 focus:ring-2 focus:ring-[#2F2FE4]"
-                  style={{ backgroundColor: swatch }}
-                />
+          {/* TAB 2: Preset Themes */}
+          {activeTab === 'themes' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {PRESET_THEMES.map((t) => (
+                <div
+                  key={t.name}
+                  onClick={() => onChange(t.apply(typography))}
+                  className="p-5 rounded-2xl border border-slate-200 hover:border-[#2F2FE4] hover:bg-[#2F2FE4]/5 transition-all cursor-pointer space-y-2 group bg-white shadow-sm"
+                >
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#2F2FE4]/10 text-[#2F2FE4]">
+                    {t.tag}
+                  </span>
+                  <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-[#2F2FE4]">{t.name}</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed">{t.desc}</p>
+                </div>
               ))}
-              <div className="flex items-center gap-1.5 ml-2 border border-slate-300 rounded-lg px-2 py-1 bg-white">
-                <span className="text-xs text-slate-500 font-mono">Custom:</span>
-                <input
-                  type="color"
-                  value={
-                    activeElement === 'studentName'
-                      ? typography.studentNameColor
-                      : activeElement === 'title'
-                      ? typography.titleColor
-                      : typography.domainColor
-                  }
-                  onChange={(e) => handleColorSelect(e.target.value)}
-                  className="w-6 h-6 rounded cursor-pointer border-none bg-transparent"
-                />
+            </div>
+          )}
+
+          {/* TAB 3: Fonts Explorer */}
+          {activeTab === 'fonts' && (
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Type ANY Google Font (e.g. Poppins, Tangerine, Lora)..."
+                    value={fontSearchInput}
+                    onChange={(e) => setFontSearchInput(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs bg-slate-50"
+                  />
+                </div>
+                <button
+                  onClick={() => handleFontChange(fontSearchInput)}
+                  disabled={!fontSearchInput.trim()}
+                  className="px-5 py-2.5 rounded-xl bg-[#2F2FE4] text-white font-bold text-xs shadow-md disabled:opacity-50"
+                >
+                  Load & Apply
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {GOOGLE_FONTS_CATALOG.filter(
+                  (f) => !fontSearchInput || f.name.toLowerCase().includes(fontSearchInput.toLowerCase())
+                ).map((f) => (
+                  <button
+                    key={f.name}
+                    onClick={() => handleFontChange(f.name)}
+                    className="p-3 rounded-xl border border-slate-200 hover:border-[#2F2FE4] hover:bg-[#2F2FE4]/5 text-left transition-all bg-white"
+                  >
+                    <span className="text-base block truncate leading-tight" style={{ fontFamily: f.name }}>
+                      {f.name}
+                    </span>
+                    <span className="text-[10px] text-slate-400 mt-1 block">{f.category}</span>
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Footer */}
+        {/* Footer Actions */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50">
           <button
             onClick={onReset}
             className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Reset Defaults
+            <RefreshCw className="w-3.5 h-3.5" /> Reset Defaults
           </button>
           <button
             onClick={onClose}
-            className="px-6 py-2 rounded-xl bg-[#2F2FE4] hover:bg-[#4F46E5] text-white font-bold text-sm shadow-md transition-all"
+            className="px-6 py-2 rounded-xl bg-[#2F2FE4] hover:bg-[#4F46E5] text-white font-bold text-xs shadow-md transition-all flex items-center gap-1"
           >
-            Done
+            <Check className="w-4 h-4" /> Apply & Close
           </button>
         </div>
       </div>

@@ -16,15 +16,53 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
   companyTemplate,
   id = 'certificateCanvas',
 }) => {
-  const nameFont = typography?.studentNameFont || "'Cormorant Garamond', Georgia, serif";
-  const nameColor = typography?.studentNameColor || '#0b1d3a';
-  const nameSize = typography?.studentNameSize || 42;
-  const nameItalic = typography?.studentNameItalic !== false;
-  const nameWeight = typography?.studentNameWeight || '600';
-  const titleFont = typography?.titleFont || "'Playfair Display', Georgia, serif";
-  const titleColor = typography?.titleColor || '#0a192f';
-  const domainColor = typography?.domainColor || '#2F2FE4';
-  const letterSpacing = typography?.letterSpacing || 0;
+  // Element-level typography styling resolution matching preview.html parity
+  const nameStyle = typography?.certName || {
+    fontFamily: typography?.studentNameFont || 'Cormorant Garamond',
+    fontSize: typography?.studentNameSize || 44,
+    color: typography?.studentNameColor || '#12539c',
+    fontStyle: typography?.studentNameItalic !== false ? 'italic' : 'normal',
+    fontWeight: typography?.studentNameWeight || '600',
+    letterSpacing: typography?.letterSpacing || 1,
+  };
+
+  const titleStyle = typography?.certTitle || {
+    fontFamily: typography?.titleFont || 'Playfair Display',
+    color: typography?.titleColor || '#0b2545',
+    fontWeight: '800',
+    fontSize: 32,
+    letterSpacing: 0.3,
+  };
+
+  const eyebrowStyle = typography?.certEyebrow || {
+    fontFamily: 'Inter',
+    color: '#5c7595',
+    fontWeight: '700',
+    letterSpacing: 3,
+  };
+
+  const domainStyle = typography?.certDomain || {
+    fontFamily: 'Inter',
+    color: typography?.domainColor || '#1f6fd6',
+    fontWeight: '700',
+  };
+
+  const descStyle = typography?.certDesc || {
+    fontFamily: typography?.descriptionFont || 'Inter',
+    color: '#333d4a',
+  };
+
+  const signatoryStyle = typography?.certSignatory || {
+    fontFamily: 'Inter',
+    color: '#0b2545',
+    fontWeight: '600',
+  };
+
+  const metaStyle = typography?.certMeta || {
+    fontFamily: typography?.metaFont || 'JetBrains Mono',
+    color: '#000000',
+    fontWeight: '600',
+  };
 
   const eyebrow = companyTemplate?.eyebrow || 'This certifies that';
   const mainTitle = companyTemplate?.mainTitle || 'Internship Completion Certificate';
@@ -82,16 +120,23 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
         {/* 2. Certificate Eyebrow & Title */}
         <div className="text-center -mt-2 sm:mt-0">
           <p
-            className="text-[9.5px] sm:text-[11.5px] md:text-[12px] font-bold uppercase tracking-[3px] text-[#5c7595] mb-0.5"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="text-[9.5px] sm:text-[11.5px] md:text-[12px] uppercase mb-0.5"
+            style={{
+              fontFamily: eyebrowStyle.fontFamily,
+              color: eyebrowStyle.color,
+              fontWeight: eyebrowStyle.fontWeight,
+              letterSpacing: `${eyebrowStyle.letterSpacing || 3}px`,
+            }}
           >
             {eyebrow}
           </p>
           <h2
-            className="text-[18px] sm:text-[26px] md:text-[32px] font-extrabold tracking-tight"
+            className="text-[18px] sm:text-[26px] md:text-[32px] tracking-tight"
             style={{
-              fontFamily: titleFont,
-              color: titleColor,
+              fontFamily: titleStyle.fontFamily,
+              color: titleStyle.color,
+              fontWeight: titleStyle.fontWeight,
+              letterSpacing: `${titleStyle.letterSpacing || 0.3}px`,
             }}
           >
             {mainTitle}
@@ -103,12 +148,12 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
           <h3
             className="leading-none px-4"
             style={{
-              fontFamily: nameFont,
-              color: nameColor,
-              fontSize: `clamp(22px, 3.5vw, ${nameSize}px)`,
-              fontStyle: nameItalic ? 'italic' : 'normal',
-              fontWeight: nameWeight,
-              letterSpacing: `${letterSpacing}px`,
+              fontFamily: nameStyle.fontFamily,
+              color: nameStyle.color,
+              fontSize: nameStyle.fontSize ? `clamp(22px, 3.5vw, ${nameStyle.fontSize}px)` : 'clamp(22px, 3.5vw, 44px)',
+              fontStyle: nameStyle.fontStyle || 'italic',
+              fontWeight: nameStyle.fontWeight || '600',
+              letterSpacing: `${nameStyle.letterSpacing || 1}px`,
             }}
           >
             {data.studentName || 'Student Name'}
@@ -130,12 +175,12 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
               background: 'linear-gradient(135deg, rgba(11, 37, 69, 0.04) 0%, rgba(31, 111, 214, 0.08) 50%, rgba(168, 121, 31, 0.07) 100%)',
               borderLeft: '2.5px solid rgba(168, 121, 31, 0.6)',
               borderRight: '2.5px solid rgba(168, 121, 31, 0.6)',
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: domainStyle.fontFamily || "'Inter', sans-serif",
             }}
           >
             <span className="text-[10px] sm:text-[12px] md:text-[13.5px] font-semibold text-[#0b2545]">
               Internship Domain&nbsp;:&nbsp;
-              <span className="font-bold text-[#1f6fd6]" style={{ color: domainColor }}>
+              <span className="font-bold" style={{ color: domainStyle.color || '#1f6fd6', fontWeight: domainStyle.fontWeight || '700' }}>
                 {data.course || 'Domain / Course'}
               </span>
             </span>
@@ -144,8 +189,8 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
 
         {/* 5. Description Paragraphs (Exact match to screenshot) */}
         <div
-          className="text-center space-y-1.5 sm:space-y-2 text-[9px] sm:text-[11px] md:text-[12px] leading-relaxed text-[#333d4a] px-2 sm:px-6 max-w-[94%] mx-auto"
-          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="text-center space-y-1.5 sm:space-y-2 text-[9px] sm:text-[11px] md:text-[12px] leading-relaxed px-2 sm:px-6 max-w-[94%] mx-auto"
+          style={{ fontFamily: descStyle.fontFamily || "'Inter', sans-serif", color: descStyle.color || '#333d4a' }}
         >
           <p className="m-0">
             This Certificate of Completion is proudly awarded in recognition of the successful completion of the
@@ -174,15 +219,15 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
           <div className="space-y-0.5 text-[8.5px] sm:text-[10px] md:text-[11px]">
             <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
               <span className="font-semibold text-[#0b2545]">Duration</span>
-              <b className="font-mono font-bold text-black">{data.duration || '—'}</b>
+              <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{data.duration || '—'}</b>
             </div>
             <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
               <span className="font-semibold text-[#0b2545]">Issue Date</span>
-              <b className="font-mono font-bold text-black">{formatDate(data.issueDate)}</b>
+              <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{formatDate(data.issueDate)}</b>
             </div>
             <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
               <span className="font-semibold text-[#0b2545]">Verify ID</span>
-              <b className="font-mono font-bold text-black">{data.verifyId || '—'}</b>
+              <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{data.verifyId || '—'}</b>
             </div>
           </div>
 
@@ -204,7 +249,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
           {/* Right Signature Block */}
           <div className="flex flex-col items-center justify-end text-center justify-self-end">
             <div className="w-[100px] sm:w-[130px] border-b border-[#0b2545] mb-1" />
-            <p className="text-[8px] sm:text-[10px] md:text-[11px] font-semibold text-[#0b2545]" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <p className="text-[8px] sm:text-[10px] md:text-[11px]" style={{ fontFamily: signatoryStyle.fontFamily || "'Inter', sans-serif", color: signatoryStyle.color || '#0b2545', fontWeight: signatoryStyle.fontWeight || '600' }}>
               {founderDesignation}
             </p>
           </div>

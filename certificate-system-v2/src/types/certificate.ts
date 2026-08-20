@@ -18,6 +18,15 @@ export interface CertificateRecord {
   createdAt: string;
 }
 
+export interface ElementStyle {
+  fontFamily: string;
+  fontSize?: number; // in px
+  fontWeight: string;
+  fontStyle: 'normal' | 'italic';
+  color: string;
+  letterSpacing?: number; // in px
+}
+
 export interface TypographySettings {
   studentNameFont: string;
   studentNameSize: number; // in px or scale
@@ -30,6 +39,15 @@ export interface TypographySettings {
   descriptionFont: string;
   metaFont: string;
   letterSpacing: number; // in px
+
+  // Element targets for full parity with original preview.html studio
+  certName?: ElementStyle;
+  certTitle?: ElementStyle;
+  certEyebrow?: ElementStyle;
+  certDomain?: ElementStyle;
+  certDesc?: ElementStyle;
+  certSignatory?: ElementStyle;
+  certMeta?: ElementStyle;
 }
 
 export interface CompanyTemplateSettings {
