@@ -21,8 +21,11 @@ app.use(createProxyMiddleware({
 // Serve static files
 app.use(express.static(__dirname));
 
-// SPA fallback for client-side routing
 app.get('*', (req, res) => {
+  // For /studentverify routes, serve studentverify.html
+  if (req.path.startsWith('/studentverify')) {
+    return res.sendFile(join(__dirname, 'studentverify.html'));
+  }
   // For /verify routes, serve verify.html
   if (req.path.startsWith('/verify')) {
     return res.sendFile(join(__dirname, 'verify.html'));

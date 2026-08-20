@@ -4,6 +4,8 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://atideto-backend-system.vercel.app/api/:path*" },
+    { "source": "/studentverify/:path*", "destination": "/studentverify.html" },
+    { "source": "/studentverify", "destination": "/studentverify.html" },
     { "source": "/verify/:path*", "destination": "/verify.html" },
     { "source": "/verify", "destination": "/verify.html" },
     { "source": "/preview/:path*", "destination": "/preview.html" },

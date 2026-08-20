@@ -86,7 +86,7 @@ function attachLiveListeners(){
     renderAll();
     if(e.target.id === "verifyId" && !$("qrLink").dataset.userEdited){
       const val = e.target.value.trim();
-      $("qrLink").value = val ? `${window.location.origin}/verify?id=${encodeURIComponent(val)}` : "";
+      $("qrLink").value = val ? `https://atideto-certificate-system.vercel.app/studentverify?id=${encodeURIComponent(val)}` : "";
       updateQr();
     }
   });
@@ -583,7 +583,7 @@ async function loadStudentData(studentId) {
 
     const certId = student.certificateId || "";
     $("verifyId").value = certId;
-    $("qrLink").value = certId ? `${window.location.origin}/verify?id=${encodeURIComponent(certId)}` : "";
+    $("qrLink").value = certId ? `https://atideto-certificate-system.vercel.app/studentverify?id=${encodeURIComponent(certId)}` : "";
 
     renderAll();
     updateQr();
