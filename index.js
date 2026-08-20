@@ -162,10 +162,10 @@ function actionHtml(s) {
   const parts = [];
   if (s.status === 'CERTIFICATE_GENERATED') {
     parts.push('<span class="text-green" style="font-size:12px;font-weight:600;">✓ Generated</span>');
-  } else if (s.status === 'COMPLETED') {
-    parts.push(`<button class="btn btn-sm btn-primary" onclick="handleGenerate('${s.applicationId}')">Certificate</button>`);
+  } else if (s.status !== 'REJECTED') {
+    parts.push(`<button class="btn btn-sm btn-primary" onclick="handleGenerate('${s.applicationId}')">Generate</button>`);
   } else {
-    parts.push(`<span class="text-muted" style="font-size:12px;">Awaiting completion</span>`);
+    parts.push(`<span class="text-muted" style="font-size:12px;">Rejected</span>`);
   }
   parts.push(`<button class="btn btn-sm btn-outline" onclick="openStudentModal('${s.applicationId}')">View Details</button>`);
   parts.push(`<button class="btn btn-sm btn-outline" onclick="window.open('preview.html?applicationId=${s.applicationId}','_blank')">Preview</button>`);
@@ -245,7 +245,7 @@ function openStudentModal(applicationId) {
   $('modalPreviewBtn').onclick = () => {
     window.open(`preview.html?applicationId=${s.applicationId}`, '_blank');
   };
-  $('modalGenerateBtn').style.display = s.status === 'COMPLETED' ? '' : 'none';
+  $('modalGenerateBtn').style.display = s.status === 'REJECTED' ? 'none' : '';
 
   $('studentModal').classList.remove('hidden');
 }
@@ -365,7 +365,7 @@ function populateRenderCertificate(student, cert) {
 
   const qrImg = $('renderQrImage');
   if (qrImg) {
-    const qrUrl = `https://atideto-certificate-system.vercel.app/studentverify?id=${encodeURIComponent(cert.certificateId)}`;
+    const qrUrl = cert.verificationUrl || `https://atideto-certificate-system.vercel.app/studentverify.html?id=${encodeURIComponent(cert.certificateId)}`;
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(qrUrl)}`;
   }
 }

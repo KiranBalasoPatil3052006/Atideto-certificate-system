@@ -408,9 +408,6 @@ body {
 /* =================================================================
    Verified Student Hero Banner (Animated & Professional)
    ================================================================= */
-.verified-student-view {
-  /* parent container — individual sections handle their own animations */
-}
 
 .verified-hero-banner {
   background: linear-gradient(135deg, #064E3B 0%, #047857 50%, #059669 100%);

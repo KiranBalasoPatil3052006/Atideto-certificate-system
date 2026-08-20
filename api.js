@@ -3,7 +3,17 @@
    same-origin proxy in server.js. Uses cookie auth + CSRF double-submit. */
 
 const API_BASE = '/api';
-let csrfToken = null;
+function getCsrfToken() {
+  if (csrfToken) return csrfToken;
+  if (typeof document !== 'undefined' && document.cookie) {
+    const match = document.cookie.match(/(?:^|; )csrfToken=([^;]*)/);
+    if (match) {
+      csrfToken = decodeURIComponent(match[1]);
+      return csrfToken;
+    }
+  }
+  return null;
+}
 
 async function apiRequest(path, options = {}) {
   const url = API_BASE + path;
@@ -13,9 +23,10 @@ async function apiRequest(path, options = {}) {
     ...options.headers,
   };
 
-  // State-changing requests must echo the CSRF cookie value
-  if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS' && csrfToken) {
-    headers['x-csrf-token'] = csrfToken;
+  // State-changing requests must echo the CSRF token (memory or cookie)
+  const token = getCsrfToken();
+  if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS' && token) {
+    headers['x-csrf-token'] = token;
   }
 
   let res;
