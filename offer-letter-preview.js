@@ -283,10 +283,21 @@ function selectStudentById(id) {
   }
 }
 
+async function checkAuth() {
+  try {
+    if (typeof fetchMe === "function") {
+      await fetchMe();
+    }
+  } catch (e) {
+    window.location.href = "index.html";
+  }
+}
+
 /* ============================================================
    Init
    ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
+  await checkAuth();
   loadSavedTemplate();
   renderStudentFields();
   attachStudentFormListeners();

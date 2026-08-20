@@ -129,7 +129,7 @@ body {
    Login View
    ================================================================= */
 .login-wrapper {
-  min-height: calc(100vh - 62px);
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;

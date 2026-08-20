@@ -653,10 +653,19 @@ $("generateBackendBtn").addEventListener("click", async () => {
   }
 });
 
+async function checkAuth() {
+  try {
+    await fetchMe();
+  } catch (e) {
+    window.location.href = "index.html";
+  }
+}
+
 /* ============================================================
    Init
    ============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await checkAuth();
   renderAll();
   updateQr();
   attachLiveListeners();

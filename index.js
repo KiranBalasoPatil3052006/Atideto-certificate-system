@@ -44,6 +44,8 @@ async function initAuth() {
 }
 
 function showAdmin() {
+  const nav = $('adminNav') || document.querySelector('.admin-nav');
+  if (nav) nav.classList.remove('hidden');
   $('loginView').classList.add('hidden');
   $('adminMain').classList.remove('hidden');
   $('logoutBtn').classList.remove('hidden');
@@ -51,6 +53,8 @@ function showAdmin() {
 }
 
 function showLogin() {
+  const nav = $('adminNav') || document.querySelector('.admin-nav');
+  if (nav) nav.classList.add('hidden');
   $('loginView').classList.remove('hidden');
   $('adminMain').classList.add('hidden');
   $('logoutBtn').classList.add('hidden');
