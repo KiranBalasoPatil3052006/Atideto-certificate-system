@@ -162,6 +162,7 @@ function actionHtml(s) {
   const parts = [];
   if (s.status === 'CERTIFICATE_GENERATED') {
     parts.push('<span class="text-green" style="font-size:12px;font-weight:600;">✓ Generated</span>');
+    parts.push(`<button class="btn btn-sm btn-outline" style="color:#059669;border-color:#059669;font-weight:600;" onclick="viewStudentVerify('${s.applicationId}')">View Verified</button>`);
   } else if (s.status !== 'REJECTED') {
     parts.push(`<button class="btn btn-sm btn-primary" onclick="handleGenerate('${s.applicationId}')">Generate</button>`);
   } else {
@@ -170,6 +171,21 @@ function actionHtml(s) {
   parts.push(`<button class="btn btn-sm btn-outline" onclick="openStudentModal('${s.applicationId}')">View Details</button>`);
   parts.push(`<button class="btn btn-sm btn-outline" onclick="window.open('preview.html?applicationId=${s.applicationId}','_blank')">Preview</button>`);
   return parts.join(' ');
+}
+
+async function viewStudentVerify(applicationId) {
+  let cert = certificates.find(c => c.applicationId === applicationId);
+  if (!cert) {
+    try {
+      const res = await listCertificates();
+      certificates = res.certificates || [];
+      cert = certificates.find(c => c.applicationId === applicationId);
+    } catch (e) {
+      // ignore
+    }
+  }
+  const id = cert ? cert.certificateId : applicationId;
+  window.open(`studentverify.html?id=${encodeURIComponent(id)}`, '_blank');
 }
 
 function openStudentModal(applicationId) {
@@ -529,8 +545,10 @@ async function processSingleGeneration(applicationId, format) {
       }
     }
 
-    showMsg(`Certificate generated and downloaded (${format.toUpperCase()}): ${cert.certificateId}`);
+    const verifyUrl = cert.verificationUrl || `studentverify.html?id=${encodeURIComponent(cert.certificateId)}`;
+    showMsg(`✓ Certificate generated & downloaded (${format.toUpperCase()}): ${cert.certificateId}`);
     loadStudents();
+    window.open(verifyUrl, '_blank');
   } catch (err) {
     showMsg(`Generation failed: ${err.message}`, true);
   }
@@ -631,7 +649,7 @@ function renderCertificates() {
       <td class="td-actions">
         ${c.status === 'active'
           ? `<button class="btn btn-sm btn-danger" onclick="handleRevoke('${c.certificateId}')">Revoke</button>
-             <button class="btn btn-sm btn-outline" onclick="window.open('verify.html?id=${c.certificateId}','_blank')">View</button>`
+             <button class="btn btn-sm btn-outline" onclick="window.open('studentverify.html?id=${encodeURIComponent(c.certificateId)}','_blank')">View</button>`
           : '<span class="text-muted">Revoked</span>'
         }
       </td>

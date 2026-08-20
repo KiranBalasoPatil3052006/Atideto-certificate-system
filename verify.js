@@ -75,11 +75,11 @@ function renderResult(cert) {
     </div>
   `;
 
-  /* Certificate Preview (Exact preview.html format) */
   const startD = cert.startDate || '';
   const endD = cert.endDate || '';
-  const issueD = cert.issuedAt ? new Date(cert.issuedAt.toDate ? cert.issuedAt.toDate() : cert.issuedAt).toISOString().split('T')[0] : '';
-  const qrUrl = `https://atideto-certificate-system.vercel.app/studentverify?id=${encodeURIComponent(cert.certificateId)}`;
+  const rawIssue = cert.issueDate || cert.issuedAt;
+  const issueD = rawIssue ? new Date(rawIssue.toDate ? rawIssue.toDate() : rawIssue).toISOString().split('T')[0] : '';
+  const qrUrl = cert.verificationUrl || `https://atideto-certificate-system.vercel.app/studentverify.html?id=${encodeURIComponent(cert.certificateId)}`;
   const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(qrUrl)}`;
 
   $('certPreviewWrap').innerHTML = `

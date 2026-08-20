@@ -7,14 +7,49 @@ let csrfToken = null;
 
 function getCsrfToken() {
   if (csrfToken) return csrfToken;
+  if (typeof sessionStorage !== 'undefined') {
+    const saved = sessionStorage.getItem('atideto_csrf_token');
+    if (saved) {
+      csrfToken = saved;
+      return csrfToken;
+    }
+  }
+  if (typeof localStorage !== 'undefined') {
+    const saved = localStorage.getItem('atideto_csrf_token');
+    if (saved) {
+      csrfToken = saved;
+      return csrfToken;
+    }
+  }
   if (typeof document !== 'undefined' && document.cookie) {
-    const match = document.cookie.match(/(?:^|; )csrfToken=([^;]*)/);
+    const match = document.cookie.match(/(?:^|; )(?:atideto_csrf|csrfToken)=([^;]*)/);
     if (match) {
       csrfToken = decodeURIComponent(match[1]);
       return csrfToken;
     }
   }
   return null;
+}
+
+function setCsrfToken(token) {
+  if (!token) return;
+  csrfToken = token;
+  if (typeof sessionStorage !== 'undefined') {
+    sessionStorage.setItem('atideto_csrf_token', token);
+  }
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('atideto_csrf_token', token);
+  }
+}
+
+function clearCsrfToken() {
+  csrfToken = null;
+  if (typeof sessionStorage !== 'undefined') {
+    sessionStorage.removeItem('atideto_csrf_token');
+  }
+  if (typeof localStorage !== 'undefined') {
+    localStorage.removeItem('atideto_csrf_token');
+  }
 }
 
 async function apiRequest(path, options = {}) {
@@ -25,7 +60,7 @@ async function apiRequest(path, options = {}) {
     ...options.headers,
   };
 
-  // State-changing requests must echo the CSRF token (memory or cookie)
+  // State-changing requests must echo the CSRF token (memory, storage, or cookie)
   const token = getCsrfToken();
   if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS' && token) {
     headers['x-csrf-token'] = token;
@@ -69,16 +104,27 @@ async function apiPost(path, body) {
 /* ---------- Auth (main backend, cookie + CSRF) ---------- */
 async function login(email, password) {
   const data = await apiPost('/admin/auth/login', { email, password });
-  csrfToken = (data.data && data.data.csrfToken) || null;
+  const token = (data.data && data.data.csrfToken) || null;
+  if (token) setCsrfToken(token);
   return data;
 }
 
 async function logout() {
-  return apiPost('/admin/auth/logout');
+  try {
+    const res = await apiPost('/admin/auth/logout');
+    clearCsrfToken();
+    return res;
+  } catch (e) {
+    clearCsrfToken();
+    throw e;
+  }
 }
 
 async function fetchMe() {
-  return apiGet('/admin/auth/me');
+  const data = await apiGet('/admin/auth/me');
+  const token = (data.data && data.data.csrfToken) || null;
+  if (token) setCsrfToken(token);
+  return data;
 }
 
 /* ---------- Internship applications (students) ---------- */

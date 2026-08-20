@@ -250,6 +250,11 @@ function renderVerifiedStudentView(cert) {
         <span class="detail-label">College / Institution</span>
         <span class="detail-val">${esc(cert.college || '—')}</span>
       </div>
+      ${cert.registerNo ? `
+      <div class="detail-block">
+        <span class="detail-label">Register Number</span>
+        <span class="detail-val detail-val-mono">${esc(cert.registerNo)}</span>
+      </div>` : ''}
       <div class="detail-block">
         <span class="detail-label">Internship Duration</span>
         <span class="detail-val">${esc(cert.duration || '—')}</span>
