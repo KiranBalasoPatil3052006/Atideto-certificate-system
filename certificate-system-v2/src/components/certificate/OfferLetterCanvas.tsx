@@ -18,6 +18,9 @@ export interface OfferLetterData {
 
 export interface OfferLetterTemplate {
   title: string;
+  titleFontFamily?: string;
+  titleFontWeight?: number | string;
+  titleLetterSpacing?: string;
   to: string;
   dear: string;
   intro: string;
@@ -113,14 +116,18 @@ export const OfferLetterCanvas: React.FC<OfferLetterCanvasProps> = ({
             />
           </div>
 
-          {/* 2. Document Title: Poppins SemiBold, 28pt, Navy #0A3D91 */}
+          {/* 2. Document Title: Refined Montserrat Medium / SemiBold with letter-spacing */}
           <div className="text-center my-3">
             <h1
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('title', e.currentTarget.textContent || '')}
-              className={`text-[16px] sm:text-[22px] md:text-[26px] font-semibold uppercase tracking-wide text-[#0A3D91] ${getEditableClass()}`}
-              style={{ fontFamily: "'Poppins', sans-serif" }}
+              className={`text-[15px] sm:text-[20px] md:text-[24px] uppercase text-[#0A3D91] ${getEditableClass()}`}
+              style={{
+                fontFamily: template.titleFontFamily || "'Montserrat', 'Inter', sans-serif",
+                fontWeight: template.titleFontWeight || 500,
+                letterSpacing: template.titleLetterSpacing || '2px',
+              }}
             >
               {template.title}
             </h1>
