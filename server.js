@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { fileURLToPath } from 'url';
@@ -7,9 +8,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 5173;
 
+// Backend API URL — read from environment variable, fallback to local dev URL
+const BACKEND_URL = process.env.BACKEND_URL ?? 'http://localhost:5000';
+
 // Proxy API calls to the main Atideto backend (MongoDB source of truth)
 app.use(createProxyMiddleware({
-  target: 'http://localhost:5000',
+  target: BACKEND_URL,
   changeOrigin: true,
   pathFilter: (path) => path.startsWith('/api/'),
 }));
