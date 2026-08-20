@@ -48,7 +48,7 @@ export const DEFAULT_OFFER_TEMPLATE: OfferLetterTemplate = {
   companyName: 'ATIDETO Technologies',
   footerAddress: '📍 Ponnamapet, Salem, Tamil Nadu – 636001',
   footerEmail: '✉ atideto.in@gmail.com',
-  footerPhone: '☎ +91 90872 84053',
+  footerPhone: '☎ +91 XXXXX XXXXX',
   footerWebsite: '🌐 www.atideto.in',
 };
 
@@ -73,14 +73,22 @@ export const OfferLetterCanvas: React.FC<OfferLetterCanvasProps> = ({
     }
   };
 
+  const getEditableClass = (isInline = false) => {
+    if (!isEditingTemplate) return '';
+    return isInline
+      ? 'outline-dashed outline-1 outline-[#2166c4] bg-[#2166c4]/10 rounded px-1 cursor-text'
+      : 'outline-dashed outline-1 outline-[#2166c4] bg-[#2166c4]/10 rounded p-1.5 cursor-text';
+  };
+
   return (
     <div
       id={id}
-      className={`relative w-full max-w-[680px] mx-auto bg-white rounded-lg shadow-2xl overflow-hidden select-none text-slate-800 font-sans ${
-        isEditingTemplate ? 'ring-2 ring-[#2F2FE4]' : ''
+      className={`relative w-full max-w-[680px] mx-auto bg-white rounded shadow-2xl overflow-hidden select-none text-[#333333] ${
+        isEditingTemplate ? 'ring-2 ring-[#2166c4]' : ''
       }`}
       style={{
         aspectRatio: '1023 / 1537',
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       {/* Background Graphic */}
@@ -90,128 +98,130 @@ export const OfferLetterCanvas: React.FC<OfferLetterCanvasProps> = ({
         className="absolute inset-0 w-full h-full object-fill pointer-events-none z-0"
       />
 
-      {/* Letter Inner Content */}
+      {/* Letter Inner Content Container */}
       <div
         className="relative z-10 w-full h-full flex flex-col justify-between"
-        style={{ padding: '8% 9% 6%' }}
+        style={{ padding: '6.5% 8.5% 5.5%' }}
       >
         <div>
-          {/* 1. Header / Logo */}
-          <div className="flex justify-start mb-3">
+          {/* 1. Header / Logo (Centered) */}
+          <div className="flex justify-center items-center min-h-[48px] mb-2">
             <img
               src="/assets/atideto-logo.png"
               alt="ATIDETO Technologies"
-              className="h-[36px] sm:h-[48px] object-contain"
+              className="h-[42px] sm:h-[56px] w-auto object-contain"
             />
           </div>
 
-          {/* 2. Document Title */}
-          <div className="text-center mb-3">
+          {/* 2. Document Title: Poppins SemiBold, 28pt, Navy #0A3D91 */}
+          <div className="text-center my-3">
             <h1
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('title', e.currentTarget.textContent || '')}
-              className={`text-[16px] sm:text-[20px] font-extrabold tracking-wide uppercase text-slate-900 ${
-                isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] bg-blue-50/50 p-1' : ''
-              }`}
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              className={`text-[16px] sm:text-[22px] md:text-[26px] font-semibold uppercase tracking-wide text-[#0A3D91] ${getEditableClass()}`}
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {template.title}
             </h1>
-            <div className="w-[120px] h-[2px] bg-[#2F2FE4] mx-auto mt-1.5 rounded-full" />
+            <div className="w-full h-[1px] bg-[#D9E5F7] mt-3 mb-4" />
           </div>
 
-          {/* 3. Offer No & Date Row */}
-          <div className="flex justify-between items-center text-[10px] sm:text-[12px] font-medium text-slate-700 mb-4 pb-2 border-b border-slate-200">
-            <p>
-              Offer Letter No. : <strong className="font-mono text-slate-900">{data.offerNo || 'ATIDETO/2026/INT/001'}</strong>
+          {/* 3. Offer No & Date Row: Inter Medium, 10.5pt, #555555 */}
+          <div className="flex justify-between items-center text-[9px] sm:text-[11px] font-medium text-[#555555] mb-4">
+            <p className="m-0">
+              Offer Letter No. : <span className="font-medium text-[#555555]">{data.offerNo || 'ATIDETO/2026/INT/018'}</span>
             </p>
-            <p>
-              Date : <strong className="text-slate-900">{formatDate(data.offerDate)}</strong>
+            <p className="m-0">
+              Date : <span className="font-medium text-[#555555]">{formatDate(data.offerDate) || '22 June 2026'}</span>
             </p>
           </div>
 
           {/* 4. Recipient Information Block */}
-          <div className="space-y-0.5 text-[10.5px] sm:text-[12.5px] text-slate-800 mb-3 leading-snug">
+          <div className="flex flex-col gap-1 text-[9.5px] sm:text-[11.5px] text-[#333333] mb-4">
             <p
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('to', e.currentTarget.textContent || '')}
-              className={isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''}
+              className={`font-medium ${getEditableClass(true)}`}
             >
               {template.to}
             </p>
-            <p className="font-bold text-slate-900">
-              <span>{data.salutation || 'Mr./Ms.'}</span> <span>{data.studentName || 'Student Name'}</span>
+            <p className="font-semibold text-[#333333] m-0">
+              <span>{data.salutation || 'Mr./Ms.'}</span>{' '}
+              <span className="text-[#1e40af] font-semibold">{data.studentName || 'Student Name'}</span>
             </p>
-            <p className="text-slate-700">{data.collegeName || 'College / Institution'}</p>
-            <p className="text-slate-600 text-[10px] sm:text-[11.5px]">{data.studentEmail || 'student@example.com'}</p>
-            <p className="text-slate-600 text-[10px] sm:text-[11.5px]">{data.studentMobile || '+91 98765 43210'}</p>
+            <p className="font-normal text-[#333333] m-0">{data.collegeName || 'College / Institution'}</p>
+            <p className="font-normal text-[#333333] m-0">{data.studentEmail || 'student@example.com'}</p>
+            <p className="font-normal text-[#333333] m-0">{data.studentMobile || '+91 98765 43210'}</p>
           </div>
 
           {/* 5. Salutation & Intro Paragraph */}
-          <p className="text-[10.5px] sm:text-[12.5px] font-semibold text-slate-900 mb-1.5">
+          <p className="text-[9.5px] sm:text-[11.5px] font-medium text-[#333333] mb-3">
             <span
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('dear', e.currentTarget.textContent || '')}
-              className={isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''}
+              className={getEditableClass(true)}
             >
               {template.dear}
             </span>{' '}
-            {data.studentName || 'Student'},
+            <span className="text-[#1e40af] font-semibold">{data.studentName || 'Student'}</span>,
           </p>
 
           <p
             contentEditable={isEditingTemplate}
             suppressContentEditableWarning
             onBlur={(e) => updateField('intro', e.currentTarget.textContent || '')}
-            className={`text-[9.5px] sm:text-[11.5px] leading-relaxed text-slate-700 text-justify mb-3 ${
-              isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] bg-blue-50/50 p-1.5' : ''
-            }`}
+            className={`text-[9px] sm:text-[11px] leading-[1.6] text-[#333333] text-justify mb-4 ${getEditableClass()}`}
           >
             {template.intro}
           </p>
 
-          {/* 6. Structured Internship Details Table */}
-          <div className="mb-3">
+          {/* 6. Internship Details Section Heading & Soft Table */}
+          <div className="mb-4">
             <h2
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('detailsHeading', e.currentTarget.textContent || '')}
-              className={`text-[11px] sm:text-[13px] font-bold text-slate-900 uppercase tracking-wider mb-1.5 ${
-                isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''
-              }`}
+              className={`text-[10.5px] sm:text-[13px] font-semibold text-[#1e40af] mb-2.5 ${getEditableClass(true)}`}
+              style={{ fontFamily: "'Poppins', sans-serif" }}
             >
               {template.detailsHeading}
             </h2>
 
-            <table className="w-full text-[9.5px] sm:text-[11.5px] text-slate-800 border-collapse bg-slate-50/60 rounded-lg overflow-hidden">
+            <table
+              className="w-full border-collapse rounded-lg overflow-hidden text-[9px] sm:text-[10.5px] leading-snug"
+              style={{
+                background: 'rgba(244, 248, 255, 0.45)',
+                border: '1px solid rgba(217, 229, 247, 0.75)',
+              }}
+            >
               <tbody>
-                <tr className="border-b border-slate-200/80">
-                  <td className="py-1 px-2.5 font-semibold text-slate-600 w-[140px]">Internship Domain</td>
-                  <td className="py-1 px-1 font-bold text-slate-400">:</td>
-                  <td className="py-1 px-2 font-bold text-[#2F2FE4]">{data.domain || 'Domain Course'}</td>
+                <tr className="border-b border-[rgba(217,229,247,0.5)]">
+                  <td className="py-2 px-3.5 font-medium text-[#1e40af] w-[36%]">Internship Domain</td>
+                  <td className="py-2 px-1 text-center text-[#333333] w-[4%]">:</td>
+                  <td className="py-2 px-3.5 font-normal text-[#333333] w-[60%]">{data.domain || 'Artificial Intelligence'}</td>
                 </tr>
-                <tr className="border-b border-slate-200/80">
-                  <td className="py-1 px-2.5 font-semibold text-slate-600">Duration</td>
-                  <td className="py-1 px-1 font-bold text-slate-400">:</td>
-                  <td className="py-1 px-2 font-medium">{data.duration || '2 Months'}</td>
+                <tr className="border-b border-[rgba(217,229,247,0.5)]">
+                  <td className="py-2 px-3.5 font-medium text-[#1e40af]">Duration</td>
+                  <td className="py-2 px-1 text-center text-[#333333]">:</td>
+                  <td className="py-2 px-3.5 font-normal text-[#333333]">{data.duration || '2 Months'}</td>
                 </tr>
-                <tr className="border-b border-slate-200/80">
-                  <td className="py-1 px-2.5 font-semibold text-slate-600">Start Date</td>
-                  <td className="py-1 px-1 font-bold text-slate-400">:</td>
-                  <td className="py-1 px-2 font-medium">{formatDate(data.startDate)}</td>
+                <tr className="border-b border-[rgba(217,229,247,0.5)]">
+                  <td className="py-2 px-3.5 font-medium text-[#1e40af]">Start Date</td>
+                  <td className="py-2 px-1 text-center text-[#333333]">:</td>
+                  <td className="py-2 px-3.5 font-normal text-[#333333]">{formatDate(data.startDate) || '01 June 2026'}</td>
                 </tr>
-                <tr className="border-b border-slate-200/80">
-                  <td className="py-1 px-2.5 font-semibold text-slate-600">End Date</td>
-                  <td className="py-1 px-1 font-bold text-slate-400">:</td>
-                  <td className="py-1 px-2 font-medium">{formatDate(data.endDate)}</td>
+                <tr className="border-b border-[rgba(217,229,247,0.5)]">
+                  <td className="py-2 px-3.5 font-medium text-[#1e40af]">End Date</td>
+                  <td className="py-2 px-1 text-center text-[#333333]">:</td>
+                  <td className="py-2 px-3.5 font-normal text-[#333333]">{formatDate(data.endDate) || '31 July 2026'}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 px-2.5 font-semibold text-slate-600">Mode</td>
-                  <td className="py-1 px-1 font-bold text-slate-400">:</td>
-                  <td className="py-1 px-2 font-medium">{data.mode || 'Online / Hybrid'}</td>
+                  <td className="py-2 px-3.5 font-medium text-[#1e40af]">Mode</td>
+                  <td className="py-2 px-1 text-center text-[#333333]">:</td>
+                  <td className="py-2 px-3.5 font-normal text-[#333333]">{data.mode || 'Online'}</td>
                 </tr>
               </tbody>
             </table>
@@ -222,33 +232,30 @@ export const OfferLetterCanvas: React.FC<OfferLetterCanvasProps> = ({
             contentEditable={isEditingTemplate}
             suppressContentEditableWarning
             onBlur={(e) => updateField('closing', e.currentTarget.textContent || '')}
-            className={`text-[9.5px] sm:text-[11.5px] leading-relaxed text-slate-700 text-justify mb-4 ${
-              isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] bg-blue-50/50 p-1.5' : ''
-            }`}
+            className={`text-[9px] sm:text-[11px] leading-[1.6] text-[#333333] text-justify mb-4 ${getEditableClass()}`}
           >
             {template.closing}
           </p>
         </div>
 
-        {/* 8. Signature Block & Footer */}
+        {/* 8. Signature Block & Footer Bar */}
         <div>
-          <div className="space-y-0.5 text-[9.5px] sm:text-[11.5px] mb-4">
+          {/* Signature Area (Right Positioned, Left Aligned Text) */}
+          <div className="flex flex-col items-start self-end justify-self-end ml-auto text-left mt-8 mb-2 w-auto">
             <p
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('sincerely', e.currentTarget.textContent || '')}
-              className={isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''}
+              className={`text-[9px] sm:text-[11px] font-medium text-[#333333] m-0 w-full text-left ${getEditableClass(true)}`}
             >
               {template.sincerely}
             </p>
-            <div className="h-6 sm:h-8" />
+            <div className="h-[36px] sm:h-[48px] w-full" />
             <p
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('digitalSig', e.currentTarget.textContent || '')}
-              className={`font-mono text-slate-500 text-[8.5px] sm:text-[10px] ${
-                isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''
-              }`}
+              className={`text-[7.5px] sm:text-[9.5px] italic text-[#6b7a8f] m-0 mb-1 w-full text-center ${getEditableClass(true)}`}
             >
               {template.digitalSig}
             </p>
@@ -256,9 +263,7 @@ export const OfferLetterCanvas: React.FC<OfferLetterCanvasProps> = ({
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('founder', e.currentTarget.textContent || '')}
-              className={`font-bold text-slate-900 ${
-                isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''
-              }`}
+              className={`text-[9px] sm:text-[11px] font-semibold text-[#333333] m-0 mb-0.5 w-full text-center ${getEditableClass(true)}`}
             >
               {template.founder}
             </p>
@@ -266,20 +271,49 @@ export const OfferLetterCanvas: React.FC<OfferLetterCanvasProps> = ({
               contentEditable={isEditingTemplate}
               suppressContentEditableWarning
               onBlur={(e) => updateField('companyName', e.currentTarget.textContent || '')}
-              className={`text-slate-700 ${
-                isEditingTemplate ? 'outline-dashed outline-1 outline-[#2F2FE4] p-0.5' : ''
-              }`}
+              className={`text-[9px] sm:text-[11px] font-medium text-[#333333] m-0 w-full text-left whitespace-nowrap ${getEditableClass(true)}`}
             >
               {template.companyName}
             </p>
           </div>
 
-          {/* Footer Bar */}
-          <div className="flex flex-wrap items-center justify-between text-[7.5px] sm:text-[9.5px] text-slate-500 pt-2 border-t border-slate-200">
-            <span>{template.footerAddress}</span>
-            <span>{template.footerEmail}</span>
-            <span>{template.footerPhone}</span>
-            <span>{template.footerWebsite}</span>
+          {/* 9. Single Line Footer Bar */}
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 text-[7px] sm:text-[9.5px] text-[#666666] pt-3 border-t border-[#D9E5F7] text-center whitespace-nowrap">
+            <span
+              contentEditable={isEditingTemplate}
+              suppressContentEditableWarning
+              onBlur={(e) => updateField('footerAddress', e.currentTarget.textContent || '')}
+              className={getEditableClass(true)}
+            >
+              {template.footerAddress}
+            </span>
+            <span className="text-[#D9E5F7]">•</span>
+            <span
+              contentEditable={isEditingTemplate}
+              suppressContentEditableWarning
+              onBlur={(e) => updateField('footerEmail', e.currentTarget.textContent || '')}
+              className={getEditableClass(true)}
+            >
+              {template.footerEmail}
+            </span>
+            <span className="text-[#D9E5F7]">•</span>
+            <span
+              contentEditable={isEditingTemplate}
+              suppressContentEditableWarning
+              onBlur={(e) => updateField('footerPhone', e.currentTarget.textContent || '')}
+              className={getEditableClass(true)}
+            >
+              {template.footerPhone}
+            </span>
+            <span className="text-[#D9E5F7]">•</span>
+            <span
+              contentEditable={isEditingTemplate}
+              suppressContentEditableWarning
+              onBlur={(e) => updateField('footerWebsite', e.currentTarget.textContent || '')}
+              className={getEditableClass(true)}
+            >
+              {template.footerWebsite}
+            </span>
           </div>
         </div>
       </div>
