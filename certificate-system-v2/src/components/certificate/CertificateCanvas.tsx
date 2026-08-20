@@ -57,7 +57,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
         style={{ padding: '3.6% 4.6% 2.6%' }}
       >
         {/* 1. Header Row (Logos & MSME) */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div className="flex items-center">
             <img
               src="/assets/atideto-logo.png"
@@ -69,10 +69,10 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             <img
               src="/assets/msme-logo.png"
               alt="MSME Registered"
-              className="h-[32px] sm:h-[44px] md:h-[50px] object-contain"
+              className="h-[30px] sm:h-[42px] md:h-[48px] object-contain"
             />
             <span
-              className="font-mono text-[9px] sm:text-[11px] font-bold text-slate-700 tracking-wider mt-0.5"
+              className="font-mono text-[9px] sm:text-[10.5px] font-extrabold text-[#0b2545] tracking-wider mt-0.5"
             >
               {udyamId}
             </span>
@@ -80,9 +80,9 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
         </div>
 
         {/* 2. Certificate Eyebrow & Title */}
-        <div className="text-center -mt-1 sm:mt-0">
+        <div className="text-center -mt-2 sm:mt-0">
           <p
-            className="text-[10px] sm:text-[12px] md:text-[13px] font-bold uppercase tracking-[2.5px] text-slate-600 mb-0.5"
+            className="text-[9.5px] sm:text-[11.5px] md:text-[12px] font-bold uppercase tracking-[3px] text-[#5c7595] mb-0.5"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             {eyebrow}
@@ -105,7 +105,7 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             style={{
               fontFamily: nameFont,
               color: nameColor,
-              fontSize: `clamp(22px, 3.4vw, ${nameSize}px)`,
+              fontSize: `clamp(22px, 3.5vw, ${nameSize}px)`,
               fontStyle: nameItalic ? 'italic' : 'normal',
               fontWeight: nameWeight,
               letterSpacing: `${letterSpacing}px`,
@@ -114,48 +114,53 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
             {data.studentName || 'Student Name'}
           </h3>
           <div
-            className="mx-auto mt-1.5 h-[2px] w-[50%] max-w-[320px] rounded-full"
+            className="mx-auto mt-1.5 h-[1.5px] w-[50%] max-w-[240px]"
             style={{
-              background: 'linear-gradient(90deg, transparent, #c5a059, #2F2FE4, #c5a059, transparent)',
+              background: 'linear-gradient(90deg, rgba(168, 121, 31, 0) 0%, rgba(168, 121, 31, 0.5) 20%, rgba(168, 121, 31, 0.7) 50%, rgba(168, 121, 31, 0.5) 80%, rgba(168, 121, 31, 0) 100%)',
+              opacity: 0.7,
             }}
           />
         </div>
 
-        {/* 4. Domain Highlight */}
-        <div className="text-center">
-          <p
-            className="text-[11px] sm:text-[13px] md:text-[14px] font-semibold text-slate-700"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+        {/* 4. Domain Pill Badge (Exact match to screenshot & preview.html) */}
+        <div className="text-center my-1">
+          <div
+            className="inline-flex items-center justify-center px-4 sm:px-6 py-1 sm:py-1.5 rounded-full border border-[#12539c]/20 shadow-sm"
+            style={{
+              background: 'linear-gradient(135deg, rgba(11, 37, 69, 0.04) 0%, rgba(31, 111, 214, 0.08) 50%, rgba(168, 121, 31, 0.07) 100%)',
+              borderLeft: '2.5px solid rgba(168, 121, 31, 0.6)',
+              borderRight: '2.5px solid rgba(168, 121, 31, 0.6)',
+              fontFamily: "'Inter', sans-serif",
+            }}
           >
-            Internship Domain&nbsp;:&nbsp;
-            <span
-              className="font-bold underline decoration-2 underline-offset-2"
-              style={{ color: domainColor }}
-            >
-              {data.course || 'Domain / Course'}
+            <span className="text-[10px] sm:text-[12px] md:text-[13.5px] font-semibold text-[#0b2545]">
+              Internship Domain&nbsp;:&nbsp;
+              <span className="font-bold text-[#1f6fd6]" style={{ color: domainColor }}>
+                {data.course || 'Domain / Course'}
+              </span>
             </span>
-          </p>
+          </div>
         </div>
 
-        {/* 5. Description Paragraphs */}
+        {/* 5. Description Paragraphs (Exact match to screenshot) */}
         <div
-          className="text-justify space-y-1 sm:space-y-1.5 text-[9.5px] sm:text-[11.5px] md:text-[12.5px] leading-relaxed text-[#333d4a] px-2 sm:px-4"
+          className="text-center space-y-1.5 sm:space-y-2 text-[9px] sm:text-[11px] md:text-[12px] leading-relaxed text-[#333d4a] px-2 sm:px-6 max-w-[94%] mx-auto"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          <p>
+          <p className="m-0">
             This Certificate of Completion is proudly awarded in recognition of the successful completion of the
-            internship program at <strong>ATIDETO</strong>. Throughout the internship, the intern demonstrated
-            professionalism, dedication, and a strong commitment to learning while contributing to assigned
-            responsibilities and project objectives.
+            internship program at <strong className="font-bold text-[#0b2545]">ATIDETO</strong>. Throughout the
+            internship, the intern demonstrated professionalism, dedication, and a strong commitment to learning while
+            contributing to assigned responsibilities and project objectives.
           </p>
-          <p>
+          <p className="m-0">
             The internship was successfully completed from{' '}
-            <span className="font-semibold text-slate-900">{formatDate(data.startDate)}</span> to{' '}
-            <span className="font-semibold text-slate-900">{formatDate(data.endDate)}</span> by a student of{' '}
-            <strong>{data.college || '—'}</strong>
+            <span className="font-bold text-[#1f6fd6]">{formatDate(data.startDate)}</span> to{' '}
+            <span className="font-bold text-[#1f6fd6]">{formatDate(data.endDate)}</span> by a student of{' '}
+            <strong className="font-bold text-[#0b2545]">{data.college || '—'}</strong>
             {data.registerNo ? (
               <>
-                {' '}(Register No.: <strong>{data.registerNo}</strong>)
+                {' '}(Register No.: <strong className="font-bold text-[#0b2545]">{data.registerNo}</strong>)
               </>
             ) : null}
             . We appreciate the intern's contribution and wish them continued success in their future academic and
@@ -164,52 +169,58 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
         </div>
 
         {/* 6. Bottom Row: Meta (Left), QR Code (Center), Signature (Right) */}
-        <div className="grid grid-cols-3 items-end pt-1 sm:pt-2 px-2 sm:px-4 border-t border-amber-900/10">
-          {/* Meta Info */}
-          <div className="space-y-0.5 text-[9px] sm:text-[11px] md:text-[12px] text-slate-700">
-            <p>
-              <span className="text-slate-500 mr-2 font-medium">Duration:</span>
-              <strong className="text-slate-900">{data.duration || '—'}</strong>
-            </p>
-            <p>
-              <span className="text-slate-500 mr-2 font-medium">Issue Date:</span>
-              <strong className="text-slate-900">{formatDate(data.issueDate)}</strong>
-            </p>
-            <p>
-              <span className="text-slate-500 mr-2 font-medium">Verify ID:</span>
-              <strong className="font-mono text-slate-900 text-[8.5px] sm:text-[10.5px]">{data.verifyId || '—'}</strong>
-            </p>
+        <div className="grid grid-cols-3 items-end pt-2 px-2 sm:px-4">
+          {/* Left Meta Table */}
+          <div className="space-y-0.5 text-[8.5px] sm:text-[10px] md:text-[11px]">
+            <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
+              <span className="font-semibold text-[#0b2545]">Duration</span>
+              <b className="font-mono font-bold text-black">{data.duration || '—'}</b>
+            </div>
+            <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
+              <span className="font-semibold text-[#0b2545]">Issue Date</span>
+              <b className="font-mono font-bold text-black">{formatDate(data.issueDate)}</b>
+            </div>
+            <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
+              <span className="font-semibold text-[#0b2545]">Verify ID</span>
+              <b className="font-mono font-bold text-black">{data.verifyId || '—'}</b>
+            </div>
           </div>
 
-          {/* QR Code */}
+          {/* Center QR Code */}
           <div className="flex flex-col items-center justify-center text-center">
-            <div className="p-1 bg-white border border-slate-300 rounded shadow-sm">
+            <div className="p-1 bg-white border border-[#dfe4ea] rounded shadow-sm">
               <QRCodeSVG
                 value={defaultQrUrl}
-                size={62}
+                size={58}
                 level="M"
                 includeMargin={false}
               />
             </div>
-            <span className="text-[7.5px] sm:text-[9.5px] font-semibold text-slate-600 mt-0.5 tracking-tight">
+            <span className="text-[7.5px] sm:text-[9px] font-medium text-[#5c7595] mt-0.5">
               Scan to verify
             </span>
           </div>
 
-          {/* Signature Block */}
-          <div className="flex flex-col items-end text-right">
-            <div className="w-[110px] sm:w-[150px] border-b border-slate-800 mb-1" />
-            <p className="text-[8.5px] sm:text-[10.5px] md:text-[11.5px] font-bold text-slate-900">
+          {/* Right Signature Block */}
+          <div className="flex flex-col items-center justify-end text-center justify-self-end">
+            <div className="w-[100px] sm:w-[130px] border-b border-[#0b2545] mb-1" />
+            <p className="text-[8px] sm:text-[10px] md:text-[11px] font-semibold text-[#0b2545]" style={{ fontFamily: "'Inter', sans-serif" }}>
               {founderDesignation}
             </p>
           </div>
         </div>
 
         {/* 7. Footer Contact Bar */}
-        <div className="flex items-center justify-between text-[8px] sm:text-[10px] md:text-[10.5px] text-slate-600 pt-1 border-t border-slate-200/80 px-2 sm:px-4">
-          <span>✉ {email}</span>
-          <span>☎ {phone}</span>
-          <span>🌐 {website}</span>
+        <div className="flex items-center justify-center gap-4 sm:gap-8 text-[8px] sm:text-[9.5px] md:text-[10.5px] text-[#5c7595] pt-1.5 border-t border-[#dfe4ea] px-2 sm:px-4">
+          <span className="flex items-center gap-1">
+            <span className="text-[#1f6fd6]">✉</span> {email}
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-[#1f6fd6]">☎</span> {phone}
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-[#1f6fd6]">🌐</span> {website}
+          </span>
         </div>
       </div>
     </div>
