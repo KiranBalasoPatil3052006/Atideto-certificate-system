@@ -9,7 +9,8 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 
 function fmtDate(iso) {
   if (!iso) return '—';
-  const [y, m, d] = String(iso).split('-').map(Number);
+  const str = String(iso).split('T')[0]; // handle ISO timestamps
+  const [y, m, d] = str.split('-').map(Number);
   if (y && m && d) return `${String(d).padStart(2, '0')} ${MONTHS[m - 1]} ${y}`;
   return iso;
 }
@@ -42,17 +43,25 @@ function getCertificateIdFromUrl() {
   return id ? id.trim() : '';
 }
 
+/* ============================================================
+   Initialization
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   const certId = getCertificateIdFromUrl();
+
   if (certId) {
+    // QR code scan / direct link with ?id= → auto-verify immediately
+    $('verifyLanding').classList.add('hidden');
+    $('verifyLoading').classList.remove('hidden');
     if ($('certIdInput')) $('certIdInput').value = certId;
     verifyStudentCertificate(certId);
   } else {
-    // Show error / search fallback if no ID present
+    // No ID in URL → show welcoming search form
     $('verifyLoading').classList.add('hidden');
-    $('verifyError').classList.remove('hidden');
+    $('verifyLanding').classList.remove('hidden');
   }
 
+  // Landing page search form
   if ($('verifyBtn')) {
     $('verifyBtn').addEventListener('click', () => {
       const val = $('certIdInput').value.trim();
@@ -68,11 +77,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Error state search form
+  if ($('verifyBtnError')) {
+    $('verifyBtnError').addEventListener('click', () => {
+      const val = $('certIdInputError').value.trim();
+      if (val) verifyStudentCertificate(val);
+    });
+  }
+
+  if ($('certIdInputError')) {
+    $('certIdInputError').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = $('certIdInputError').value.trim();
+        if (val) verifyStudentCertificate(val);
+      }
+    });
+  }
 });
 
+/* ============================================================
+   Verification API Call
+   ============================================================ */
 async function verifyStudentCertificate(id) {
   if (!id) return;
 
+  // Hide all states, show loading
+  $('verifyLanding').classList.add('hidden');
   $('verifyLoading').classList.remove('hidden');
   $('verifyError').classList.add('hidden');
   $('verifyResult').classList.add('hidden');
@@ -84,10 +115,14 @@ async function verifyStudentCertificate(id) {
   } catch (err) {
     $('verifyLoading').classList.add('hidden');
     $('verifyError').classList.remove('hidden');
+    if ($('certIdInputError')) $('certIdInputError').value = id;
     $('errorTextMsg').textContent = `No verified certificate matching "${id}" could be found in the ATIDETO system.`;
   }
 }
 
+/* ============================================================
+   Render Verified Student View
+   ============================================================ */
 function renderVerifiedStudentView(cert) {
   const isValid = cert.status === 'active';
   const targetId = cert.certificateId || '—';
@@ -116,8 +151,11 @@ function renderVerifiedStudentView(cert) {
   /* 2. Visual Certificate Display Card */
   const startD = cert.startDate || '';
   const endD = cert.endDate || '';
-  const issueD = cert.issuedAt ? new Date(cert.issuedAt.toDate ? cert.issuedAt.toDate() : cert.issuedAt).toISOString().split('T')[0] : '';
-  const qrUrl = `https://atideto-certificate-system.vercel.app/?id=${encodeURIComponent(targetId)}`;
+  // Backend returns issueDate (Date), not issuedAt
+  const issueD = cert.issueDate
+    ? new Date(cert.issueDate).toISOString().split('T')[0]
+    : (cert.issuedAt ? new Date(cert.issuedAt.toDate ? cert.issuedAt.toDate() : cert.issuedAt).toISOString().split('T')[0] : '');
+  const qrUrl = `https://atideto-certificate-system.vercel.app/studentverify?id=${encodeURIComponent(targetId)}`;
   const qrImgSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(qrUrl)}`;
 
   $('certPreviewWrap').innerHTML = `
@@ -222,7 +260,7 @@ function renderVerifiedStudentView(cert) {
       </div>
       <div class="detail-block">
         <span class="detail-label">Issued Date</span>
-        <span class="detail-val">${fmtTimestamp(cert.issuedAt)}</span>
+        <span class="detail-val">${fmtDate(issueD)}</span>
       </div>
       <div class="detail-block">
         <span class="detail-label">Verification Status</span>
@@ -242,6 +280,9 @@ function renderVerifiedStudentView(cert) {
   $('verifyResult').classList.remove('hidden');
 }
 
+/* ============================================================
+   Download Certificate as PNG / PDF
+   ============================================================ */
 async function downloadCertificate(format, cert) {
   const certEl = $('verifiedStudentCert');
   if (!certEl) return;

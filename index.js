@@ -365,7 +365,7 @@ function populateRenderCertificate(student, cert) {
 
   const qrImg = $('renderQrImage');
   if (qrImg) {
-    const qrUrl = cert.verificationUrl || `https://atideto-certificate-system.vercel.app/?id=${encodeURIComponent(cert.certificateId)}`;
+    const qrUrl = `https://atideto-certificate-system.vercel.app/studentverify?id=${encodeURIComponent(cert.certificateId)}`;
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(qrUrl)}`;
   }
 }

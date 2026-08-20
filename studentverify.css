@@ -49,6 +49,17 @@ body {
   }
 }
 
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 @keyframes badgePop {
   0% {
     transform: scale(0.6);
@@ -75,6 +86,45 @@ body {
 @keyframes spinSlow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Staggered section entrance animation */
+.anim-section {
+  opacity: 0;
+  animation: fadeInScale 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--anim-order, 0) * 0.12s + 0.08s);
+}
+
+/* =================================================================
+   Background Glows
+   ================================================================= */
+.glow-bg-radial {
+  position: fixed;
+  top: -120px;
+  right: -80px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-bg-shape {
+  position: fixed;
+  bottom: -60px;
+  left: -100px;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* =================================================================
@@ -179,13 +229,61 @@ body {
   margin: 36px auto;
   padding: 0 20px;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .hidden {
   display: none !important;
 }
 
-/* Loading State */
+/* =================================================================
+   Landing State — Welcoming Search Form
+   ================================================================= */
+.verify-landing-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 56px 32px 48px;
+  text-align: center;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.06);
+  max-width: 640px;
+  margin: 48px auto;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.landing-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.12);
+}
+
+.landing-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
+}
+
+.landing-desc {
+  font-size: 15px;
+  color: #64748B;
+  line-height: 1.65;
+  max-width: 480px;
+  margin: 0 auto 28px;
+}
+
+/* =================================================================
+   Loading State
+   ================================================================= */
 .loading-state-card {
   background: #FFFFFF;
   border-radius: 20px;
@@ -193,6 +291,8 @@ body {
   text-align: center;
   border: 1px solid #E2E8F0;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  margin: 48px auto;
 }
 
 .spinner-ring {
@@ -217,7 +317,9 @@ body {
   color: #64748B;
 }
 
-/* Error State */
+/* =================================================================
+   Error State
+   ================================================================= */
 .verify-error-card {
   background: #FFFFFF;
   border: 1px solid #FECDD3;
@@ -242,35 +344,72 @@ body {
   margin: 0 auto 20px;
 }
 
+/* =================================================================
+   Search Form (shared between landing & error)
+   ================================================================= */
 .search-form-wrap {
   display: flex;
   gap: 10px;
   margin-top: 24px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .search-form-wrap input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 13px 18px;
   border: 1.5px solid #CBD5E1;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-family: 'Inter', sans-serif;
+  color: #0F172A;
+  background: #F8FAFC;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.search-form-wrap input:focus {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: #FFFFFF;
+}
+
+.search-form-wrap input::placeholder {
+  color: #94A3B8;
 }
 
 .btn-search-verify {
-  background: #2563EB;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
   color: white;
   border: none;
-  padding: 12px 22px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 13px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14.5px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  white-space: nowrap;
+}
+
+.btn-search-verify:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.btn-search-verify:active {
+  transform: translateY(0);
 }
 
 /* =================================================================
    Verified Student Hero Banner (Animated & Professional)
    ================================================================= */
 .verified-student-view {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* parent container — individual sections handle their own animations */
 }
 
 .verified-hero-banner {
@@ -297,7 +436,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  shrink: 0;
+  flex-shrink: 0;
   animation: badgePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   backdrop-filter: blur(8px);
 }
@@ -686,7 +825,9 @@ body {
   color: #2563EB;
 }
 
-/* Footer */
+/* =================================================================
+   Footer
+   ================================================================= */
 .student-verify-footer {
   background: #0F172A;
   color: #94A3B8;
@@ -737,7 +878,9 @@ body {
   color: #64748B;
 }
 
-/* Mobile Responsiveness */
+/* =================================================================
+   Mobile Responsiveness
+   ================================================================= */
 @media (max-width: 640px) {
   .verified-hero-banner {
     flex-direction: column;
@@ -754,5 +897,12 @@ body {
   .cert-card-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .verify-landing-card {
+    padding: 40px 20px 36px;
+    margin: 24px auto;
+  }
+  .landing-title {
+    font-size: 22px;
   }
 }

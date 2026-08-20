@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Official Student Certificate Verification — ATIDETO Technologies. Verified student internship completion record.">
+<meta name="description" content="Official Student Certificate Verification — ATIDETO Technologies. Verify internship completion certificates instantly by scanning QR code or entering certificate ID.">
 <title>ATIDETO — Official Student Certificate Verification</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,6 @@
         </div>
       </div>
       <div class="header-right">
-        <!-- Top button that navigates directly to atideto.in -->
         <a href="https://atideto.in" target="_blank" rel="noopener noreferrer" class="btn-atideto-link">
           <span>Visit ATIDETO.in</span>
           <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -42,8 +41,27 @@
   <!-- ============ MAIN CONTENT CONTAINER ============ -->
   <main class="verify-main-container">
 
-    <!-- Loading State with Shimmer -->
-    <div id="verifyLoading" class="loading-state-card">
+    <!-- Landing State: Search Form (shown when no ID in URL) -->
+    <div id="verifyLanding" class="verify-landing-card hidden">
+      <div class="landing-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+      </div>
+      <h2 class="landing-title">Verify Student Certificate</h2>
+      <p class="landing-desc">Enter a certificate ID below to verify an ATIDETO internship completion certificate, or scan the QR code printed on the certificate.</p>
+      <div class="search-form-wrap">
+        <input type="text" id="certIdInput" placeholder="Enter Certificate ID (e.g. AT-IC-JFS-2026-0042)" autocomplete="off">
+        <button id="verifyBtn" class="btn-search-verify">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Verify</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State with Spinner -->
+    <div id="verifyLoading" class="loading-state-card hidden">
       <div class="spinner-ring">
         <div class="spinner-inner"></div>
       </div>
@@ -59,8 +77,8 @@
       <h2>Certificate Not Found</h2>
       <p id="errorTextMsg">The requested certificate ID could not be found or has been removed from our active directory.</p>
       <div class="search-form-wrap">
-        <input type="text" id="certIdInput" placeholder="Enter Certificate ID (e.g. AT-IC-JFS-2026-0042)">
-        <button id="verifyBtn" class="btn-search-verify">Verify Certificate</button>
+        <input type="text" id="certIdInputError" placeholder="Enter Certificate ID (e.g. AT-IC-JFS-2026-0042)">
+        <button id="verifyBtnError" class="btn-search-verify">Verify Certificate</button>
       </div>
     </div>
 
@@ -68,12 +86,12 @@
     <div id="verifyResult" class="verified-student-view hidden">
 
       <!-- Animated Verification Hero Banner -->
-      <div id="statusBanner" class="verified-hero-banner">
+      <div id="statusBanner" class="verified-hero-banner anim-section" style="--anim-order:0">
         <!-- Rendered dynamically by studentverify.js -->
       </div>
 
       <!-- Verified Student Certificate Section -->
-      <div class="cert-render-card">
+      <div class="cert-render-card anim-section" style="--anim-order:1">
         <div class="cert-card-header">
           <div class="cert-card-title">
             <span class="cert-icon-shield">🛡️</span>
@@ -101,7 +119,7 @@
       </div>
 
       <!-- Student & Verification Record Details -->
-      <div id="detailsCard" class="student-details-card">
+      <div id="detailsCard" class="student-details-card anim-section" style="--anim-order:2">
         <!-- Populated by studentverify.js -->
       </div>
 
