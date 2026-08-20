@@ -6,7 +6,21 @@ import { CertificateRecord } from '../types/certificate';
 import { verifyCertificatePublic } from '../lib/api';
 import { exportElementAsPng, exportElementAsPdf } from '../lib/exportEngine';
 import { formatDate } from '../lib/dateUtils';
-import { ShieldCheck, ShieldX, Download, Search, Loader2, CheckCircle2, Award, Calendar, Building, User, Hash } from 'lucide-react';
+import { ShieldCheck, ShieldX, Download, Search, Loader2, CheckCircle2, Award, Calendar, Building, User, Hash, Linkedin } from 'lucide-react';
+
+function getLinkedInCertificationUrl(cert: CertificateRecord): string {
+  const title = encodeURIComponent(`Internship Certificate - ${cert.course}`);
+  const organizationName = encodeURIComponent('ATIDETO Technologies');
+  const d = new Date(cert.issueDate || Date.now());
+  const issueYear = Number.isNaN(d.getTime()) ? new Date().getFullYear() : d.getFullYear();
+  const issueMonth = Number.isNaN(d.getTime()) ? new Date().getMonth() + 1 : d.getMonth() + 1;
+  const certUrl = encodeURIComponent(
+    cert.verificationUrl || `https://atideto-certificate-system.vercel.app/studentverify.html?id=${encodeURIComponent(cert.certificateId)}`
+  );
+  const certId = encodeURIComponent(cert.certificateId);
+
+  return `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${title}&organizationName=${organizationName}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${certUrl}&certId=${certId}`;
+}
 
 export const StudentVerifyPage: React.FC = () => {
   const { id: paramId } = useParams<{ id: string }>();
@@ -197,20 +211,28 @@ export const StudentVerifyPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Downloads */}
+              {/* Downloads & LinkedIn Share */}
               {isValid && (
                 <div className="flex sm:flex-col gap-2 shrink-0 w-full sm:w-auto">
+                  <a
+                    href={getLinkedInCertificationUrl(cert)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 text-decoration-none"
+                  >
+                    <Linkedin className="w-4 h-4 fill-white" /> Add to LinkedIn
+                  </a>
                   <button
                     onClick={handleExportPng}
                     disabled={isExporting}
-                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Download className="w-4 h-4" /> Download PNG
                   </button>
                   <button
                     onClick={handleExportPdf}
                     disabled={isExporting}
-                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Download className="w-4 h-4" /> Download PDF
                   </button>
