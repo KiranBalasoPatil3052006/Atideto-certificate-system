@@ -60,6 +60,7 @@ const GOOGLE_FONTS_CATALOG = [
 const PRESET_SWATCHES = [
   { color: '#0b2545', label: 'Navy' },
   { color: '#12539c', label: 'Royal Blue' },
+  { color: '#1f6fd6', label: 'Bright Blue' },
   { color: '#a8791f', label: 'Gold' },
   { color: '#0d5c3a', label: 'Emerald' },
   { color: '#6b1224', label: 'Burgundy' },
@@ -67,86 +68,235 @@ const PRESET_SWATCHES = [
   { color: '#000000', label: 'Black' },
 ];
 
-const PRESET_THEMES: { name: string; tag: string; desc: string; apply: (curr: TypographySettings) => TypographySettings }[] = [
+const PRESET_THEMES: {
+  name: string;
+  tag: string;
+  desc: string;
+  apply: (curr: TypographySettings) => TypographySettings;
+}[] = [
   {
     name: 'Classic Gold & Navy',
     tag: 'Royal',
     desc: 'Cormorant Garamond + Playfair Display + Gold accents',
-    apply: (curr) => ({
-      ...curr,
-      studentNameFont: 'Cormorant Garamond',
-      studentNameSize: 44,
-      studentNameColor: '#12539c',
-      studentNameItalic: true,
-      studentNameWeight: '600',
-      titleFont: 'Playfair Display',
-      titleColor: '#0b2545',
-      domainColor: '#12539c',
-    }),
+    apply: (curr) => {
+      loadGoogleFont('Cormorant Garamond');
+      loadGoogleFont('Playfair Display');
+      loadGoogleFont('Inter');
+      return {
+        ...curr,
+        studentNameFont: 'Cormorant Garamond',
+        studentNameSize: 44,
+        studentNameColor: '#12539c',
+        studentNameItalic: true,
+        studentNameWeight: '600',
+        titleFont: 'Playfair Display',
+        titleColor: '#0b2545',
+        domainColor: '#12539c',
+        certName: {
+          fontFamily: 'Cormorant Garamond',
+          fontSize: 44,
+          color: '#12539c',
+          fontStyle: 'italic',
+          fontWeight: '600',
+          letterSpacing: 1,
+        },
+        certTitle: {
+          fontFamily: 'Playfair Display',
+          fontSize: 34,
+          color: '#0b2545',
+          fontStyle: 'normal',
+          fontWeight: '800',
+          letterSpacing: 0.3,
+        },
+        certDomain: {
+          fontFamily: 'Inter',
+          color: '#12539c',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 0.4,
+        },
+        certEyebrow: {
+          fontFamily: 'Inter',
+          color: '#5c7595',
+          fontStyle: 'normal',
+          fontWeight: '500',
+          letterSpacing: 2.5,
+        },
+      };
+    },
   },
   {
     name: 'Calligraphic Script',
     tag: 'Script',
     desc: 'Great Vibes Script + Bodoni Serif + Burgundy accents',
-    apply: (curr) => ({
-      ...curr,
-      studentNameFont: 'Great Vibes',
-      studentNameSize: 50,
-      studentNameColor: '#6b1224',
-      studentNameItalic: false,
-      studentNameWeight: '400',
-      titleFont: 'Bodoni Moda',
-      titleColor: '#0b2545',
-      domainColor: '#6b1224',
-    }),
+    apply: (curr) => {
+      loadGoogleFont('Great Vibes');
+      loadGoogleFont('Bodoni Moda');
+      loadGoogleFont('Inter');
+      return {
+        ...curr,
+        studentNameFont: 'Great Vibes',
+        studentNameSize: 48,
+        studentNameColor: '#6b1224',
+        studentNameItalic: false,
+        studentNameWeight: '400',
+        titleFont: 'Bodoni Moda',
+        titleColor: '#0b2545',
+        domainColor: '#6b1224',
+        certName: {
+          fontFamily: 'Great Vibes',
+          fontSize: 48,
+          color: '#6b1224',
+          fontStyle: 'normal',
+          fontWeight: '400',
+          letterSpacing: 1,
+        },
+        certTitle: {
+          fontFamily: 'Bodoni Moda',
+          fontSize: 34,
+          color: '#0b2545',
+          fontStyle: 'normal',
+          fontWeight: '800',
+          letterSpacing: 0.3,
+        },
+        certDomain: {
+          fontFamily: 'Inter',
+          color: '#6b1224',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 0.4,
+        },
+      };
+    },
   },
   {
     name: 'Modern Minimalist',
     tag: 'Clean',
-    desc: 'Montserrat + Inter + Emerald Green accents',
-    apply: (curr) => ({
-      ...curr,
-      studentNameFont: 'Montserrat',
-      studentNameSize: 34,
-      studentNameColor: '#0d5c3a',
-      studentNameItalic: false,
-      studentNameWeight: '700',
-      titleFont: 'Poppins',
-      titleColor: '#0b2545',
-      domainColor: '#0d5c3a',
-    }),
+    desc: 'Montserrat + Poppins + Emerald Green accents',
+    apply: (curr) => {
+      loadGoogleFont('Montserrat');
+      loadGoogleFont('Poppins');
+      return {
+        ...curr,
+        studentNameFont: 'Montserrat',
+        studentNameSize: 34,
+        studentNameColor: '#0d5c3a',
+        studentNameItalic: false,
+        studentNameWeight: '700',
+        titleFont: 'Poppins',
+        titleColor: '#0b2545',
+        domainColor: '#0d5c3a',
+        certName: {
+          fontFamily: 'Montserrat',
+          fontSize: 34,
+          color: '#0d5c3a',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 1,
+        },
+        certTitle: {
+          fontFamily: 'Poppins',
+          fontSize: 32,
+          color: '#0b2545',
+          fontStyle: 'normal',
+          fontWeight: '800',
+          letterSpacing: 0.3,
+        },
+        certDomain: {
+          fontFamily: 'Montserrat',
+          color: '#0d5c3a',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 0.4,
+        },
+      };
+    },
   },
   {
     name: 'Vintage Elegance',
     tag: 'Regal',
-    desc: 'Cinzel + Tangerine + Deep Gold',
-    apply: (curr) => ({
-      ...curr,
-      studentNameFont: 'Tangerine',
-      studentNameSize: 48,
-      studentNameColor: '#a8791f',
-      studentNameItalic: true,
-      studentNameWeight: '700',
-      titleFont: 'Cinzel',
-      titleColor: '#0b2545',
-      domainColor: '#a8791f',
-    }),
+    desc: 'Tangerine + Cinzel + Deep Gold',
+    apply: (curr) => {
+      loadGoogleFont('Tangerine');
+      loadGoogleFont('Cinzel');
+      return {
+        ...curr,
+        studentNameFont: 'Tangerine',
+        studentNameSize: 52,
+        studentNameColor: '#a8791f',
+        studentNameItalic: true,
+        studentNameWeight: '700',
+        titleFont: 'Cinzel',
+        titleColor: '#0b2545',
+        domainColor: '#a8791f',
+        certName: {
+          fontFamily: 'Tangerine',
+          fontSize: 52,
+          color: '#a8791f',
+          fontStyle: 'italic',
+          fontWeight: '700',
+          letterSpacing: 1.5,
+        },
+        certTitle: {
+          fontFamily: 'Cinzel',
+          fontSize: 30,
+          color: '#0b2545',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 1,
+        },
+        certDomain: {
+          fontFamily: 'Inter',
+          color: '#a8791f',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 0.4,
+        },
+      };
+    },
   },
   {
     name: 'Tech Monospace',
     tag: 'Cyber',
     desc: 'JetBrains Mono + Outfit + Sapphire Blue',
-    apply: (curr) => ({
-      ...curr,
-      studentNameFont: 'JetBrains Mono',
-      studentNameSize: 32,
-      studentNameColor: '#1f6fd6',
-      studentNameItalic: false,
-      studentNameWeight: '700',
-      titleFont: 'Outfit',
-      titleColor: '#0b2545',
-      domainColor: '#1f6fd6',
-    }),
+    apply: (curr) => {
+      loadGoogleFont('JetBrains Mono');
+      loadGoogleFont('Outfit');
+      return {
+        ...curr,
+        studentNameFont: 'JetBrains Mono',
+        studentNameSize: 32,
+        studentNameColor: '#1f6fd6',
+        studentNameItalic: false,
+        studentNameWeight: '700',
+        titleFont: 'Outfit',
+        titleColor: '#0b2545',
+        domainColor: '#1f6fd6',
+        certName: {
+          fontFamily: 'JetBrains Mono',
+          fontSize: 32,
+          color: '#1f6fd6',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 0.5,
+        },
+        certTitle: {
+          fontFamily: 'Outfit',
+          fontSize: 32,
+          color: '#0b2545',
+          fontStyle: 'normal',
+          fontWeight: '800',
+          letterSpacing: 0.5,
+        },
+        certDomain: {
+          fontFamily: 'JetBrains Mono',
+          color: '#1f6fd6',
+          fontStyle: 'normal',
+          fontWeight: '700',
+          letterSpacing: 0.4,
+        },
+      };
+    },
   },
 ];
 
@@ -174,7 +324,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
           fontWeight: typography.studentNameWeight || '600',
           fontStyle: typography.studentNameItalic !== false ? 'italic' : 'normal',
           color: typography.studentNameColor || '#12539c',
-          letterSpacing: typography.letterSpacing || 1,
+          letterSpacing: typography.letterSpacing !== undefined ? typography.letterSpacing : 1,
         }
       );
     }
@@ -182,7 +332,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
       return (
         typography.certTitle || {
           fontFamily: typography.titleFont || 'Playfair Display',
-          fontSize: 32,
+          fontSize: 34,
           fontWeight: '800',
           fontStyle: 'normal',
           color: typography.titleColor || '#0b2545',
@@ -194,7 +344,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
       return (
         typography.certDomain || {
           fontFamily: 'Inter',
-          fontSize: 12.5,
+          fontSize: 13.5,
           fontWeight: '700',
           fontStyle: 'normal',
           color: typography.domainColor || '#12539c',
@@ -206,11 +356,11 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
       return (
         typography.certEyebrow || {
           fontFamily: 'Inter',
-          fontSize: 12,
-          fontWeight: '700',
+          fontSize: 11,
+          fontWeight: '500',
           fontStyle: 'normal',
           color: '#5c7595',
-          letterSpacing: 3,
+          letterSpacing: 2.5,
         }
       );
     }
@@ -218,7 +368,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
       return (
         typography.certDesc || {
           fontFamily: typography.descriptionFont || 'Inter',
-          fontSize: 12,
+          fontSize: 13,
           fontWeight: '400',
           fontStyle: 'normal',
           color: '#333d4a',
@@ -261,7 +411,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
       [activeElem]: updated,
     };
 
-    // Keep legacy top-level props in sync for backwards compatibility
+    // Keep legacy top-level props in sync
     if (activeElem === 'certName') {
       if (patch.fontFamily) newSettings.studentNameFont = patch.fontFamily;
       if (patch.fontSize) newSettings.studentNameSize = patch.fontSize;
@@ -291,7 +441,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-2xl bg-[#2F2FE4]/10 text-[#2F2FE4] border border-[#2F2FE4]/20">
+            <div className="p-2 rounded-2xl bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
@@ -313,7 +463,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
             onClick={() => setActiveTab('elements')}
             className={`py-2 px-4 rounded-t-xl text-xs font-bold transition-all border-t border-x ${
               activeTab === 'elements'
-                ? 'bg-white text-[#2F2FE4] border-slate-200 shadow-sm'
+                ? 'bg-white text-[#2563EB] border-slate-200 shadow-sm'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -323,7 +473,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
             onClick={() => setActiveTab('themes')}
             className={`py-2 px-4 rounded-t-xl text-xs font-bold transition-all border-t border-x ${
               activeTab === 'themes'
-                ? 'bg-white text-[#2F2FE4] border-slate-200 shadow-sm'
+                ? 'bg-white text-[#2563EB] border-slate-200 shadow-sm'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -333,7 +483,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
             onClick={() => setActiveTab('fonts')}
             className={`py-2 px-4 rounded-t-xl text-xs font-bold transition-all border-t border-x ${
               activeTab === 'fonts'
-                ? 'bg-white text-[#2F2FE4] border-slate-200 shadow-sm'
+                ? 'bg-white text-[#2563EB] border-slate-200 shadow-sm'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -360,7 +510,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                         onClick={() => setActiveElem(elem.key)}
                         className={`py-2.5 px-3 rounded-xl text-left font-semibold text-xs transition-all ${
                           isActive
-                            ? 'bg-[#2F2FE4] text-white shadow-md shadow-[#2F2FE4]/20'
+                            ? 'bg-[#2563EB] text-white shadow-md shadow-[#2563EB]/20'
                             : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80'
                         }`}
                       >
@@ -383,7 +533,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                   <select
                     value={currentStyle.fontFamily}
                     onChange={(e) => handleFontChange(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold text-xs focus:border-[#2F2FE4]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold text-xs focus:border-[#2563EB]"
                   >
                     <optgroup label="Serif (Classic & Regal)">
                       <option value="Cormorant Garamond">Cormorant Garamond</option>
@@ -429,9 +579,12 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                       className="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                     />
                     <button
-                      onClick={() => handleFontChange(customFontInput)}
+                      onClick={() => {
+                        handleFontChange(customFontInput.trim());
+                        setCustomFontInput('');
+                      }}
                       disabled={!customFontInput.trim()}
-                      className="px-4 py-2 rounded-xl bg-[#2F2FE4] text-white font-bold text-xs disabled:opacity-50"
+                      className="px-4 py-2 rounded-xl bg-[#2563EB] text-white font-bold text-xs disabled:opacity-50"
                     >
                       Apply
                     </button>
@@ -462,11 +615,13 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                     <label className="font-bold text-slate-700 block mb-1">Font Style</label>
                     <button
                       onClick={() =>
-                        updateActiveElemStyle({ fontStyle: currentStyle.fontStyle === 'italic' ? 'normal' : 'italic' })
+                        updateActiveElemStyle({
+                          fontStyle: currentStyle.fontStyle === 'italic' ? 'normal' : 'italic',
+                        })
                       }
                       className={`w-full py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                         currentStyle.fontStyle === 'italic'
-                          ? 'bg-[#2F2FE4] text-white border-[#2F2FE4]'
+                          ? 'bg-[#2563EB] text-white border-[#2563EB]'
                           : 'bg-white text-slate-700 border-slate-300'
                       }`}
                     >
@@ -525,6 +680,25 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                   </div>
                 </div>
 
+                {/* Letter Spacing */}
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">
+                    Letter Spacing ({currentStyle.letterSpacing || 0}px)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={0}
+                      max={10}
+                      step={0.5}
+                      value={currentStyle.letterSpacing || 0}
+                      onChange={(e) => updateActiveElemStyle({ letterSpacing: Number(e.target.value) })}
+                      className="flex-1"
+                    />
+                    <span className="font-mono text-xs w-10 text-right">{currentStyle.letterSpacing || 0}px</span>
+                  </div>
+                </div>
+
                 {/* Color Swatches */}
                 <div className="space-y-1.5 pt-2 border-t border-slate-200">
                   <label className="font-bold text-slate-700 block">Color Swatches</label>
@@ -551,12 +725,12 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                 <div
                   key={t.name}
                   onClick={() => onChange(t.apply(typography))}
-                  className="p-5 rounded-2xl border border-slate-200 hover:border-[#2F2FE4] hover:bg-[#2F2FE4]/5 transition-all cursor-pointer space-y-2 group bg-white shadow-sm"
+                  className="p-5 rounded-2xl border border-slate-200 hover:border-[#2563EB] hover:bg-[#2563EB]/5 transition-all cursor-pointer space-y-2 group bg-white shadow-sm"
                 >
-                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#2F2FE4]/10 text-[#2F2FE4]">
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#2563EB]/10 text-[#2563EB]">
                     {t.tag}
                   </span>
-                  <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-[#2F2FE4]">{t.name}</h4>
+                  <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-[#2563EB]">{t.name}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed">{t.desc}</p>
                 </div>
               ))}
@@ -566,6 +740,9 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
           {/* TAB 3: Fonts Explorer */}
           {activeTab === 'fonts' && (
             <div className="space-y-4">
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs">
+                Applying font to: <strong className="font-bold">{ELEMENT_TARGETS.find((e) => e.key === activeElem)?.label}</strong>
+              </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -578,9 +755,11 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                   />
                 </div>
                 <button
-                  onClick={() => handleFontChange(fontSearchInput)}
+                  onClick={() => {
+                    handleFontChange(fontSearchInput.trim());
+                  }}
                   disabled={!fontSearchInput.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-[#2F2FE4] text-white font-bold text-xs shadow-md disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-[#2563EB] text-white font-bold text-xs shadow-md disabled:opacity-50"
                 >
                   Load & Apply
                 </button>
@@ -593,7 +772,11 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
                   <button
                     key={f.name}
                     onClick={() => handleFontChange(f.name)}
-                    className="p-3 rounded-xl border border-slate-200 hover:border-[#2F2FE4] hover:bg-[#2F2FE4]/5 text-left transition-all bg-white"
+                    className={`p-3 rounded-xl border text-left transition-all bg-white cursor-pointer ${
+                      currentStyle.fontFamily === f.name
+                        ? 'border-[#2563EB] bg-[#2563EB]/5 shadow-sm'
+                        : 'border-slate-200 hover:border-[#2563EB] hover:bg-slate-50'
+                    }`}
                   >
                     <span className="text-base block truncate leading-tight" style={{ fontFamily: f.name }}>
                       {f.name}
@@ -616,7 +799,7 @@ export const TypographyStudio: React.FC<TypographyStudioProps> = ({
           </button>
           <button
             onClick={onClose}
-            className="px-6 py-2 rounded-xl bg-[#2F2FE4] hover:bg-[#4F46E5] text-white font-bold text-xs shadow-md transition-all flex items-center gap-1"
+            className="px-6 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs shadow-md transition-all flex items-center gap-1"
           >
             <Check className="w-4 h-4" /> Apply & Close
           </button>

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { CertificateFormData, TypographySettings, CompanyTemplateSettings } from '../../types/certificate';
-import { formatDate } from '../../lib/dateUtils';
+import { formatCertificateDate } from '../../lib/dateUtils';
+import { getCleanFontFamily, loadGoogleFont } from '../../lib/fontLoader';
 
 interface CertificateCanvasProps {
   data: CertificateFormData;
@@ -19,54 +20,89 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
   // Element-level typography styling resolution matching preview.html parity
   const nameStyle = typography?.certName || {
     fontFamily: typography?.studentNameFont || 'Cormorant Garamond',
-    fontSize: typography?.studentNameSize || 44,
+    fontSize: typography?.studentNameSize,
     color: typography?.studentNameColor || '#12539c',
     fontStyle: typography?.studentNameItalic !== false ? 'italic' : 'normal',
     fontWeight: typography?.studentNameWeight || '600',
-    letterSpacing: typography?.letterSpacing || 1,
+    letterSpacing: typography?.letterSpacing !== undefined ? typography.letterSpacing : 1,
   };
 
   const titleStyle = typography?.certTitle || {
     fontFamily: typography?.titleFont || 'Playfair Display',
     color: typography?.titleColor || '#0b2545',
     fontWeight: '800',
-    fontSize: 32,
+    fontSize: undefined,
+    fontStyle: 'normal',
     letterSpacing: 0.3,
   };
 
   const eyebrowStyle = typography?.certEyebrow || {
     fontFamily: 'Inter',
     color: '#5c7595',
-    fontWeight: '700',
-    letterSpacing: 3,
+    fontWeight: '500',
+    fontSize: undefined,
+    fontStyle: 'normal',
+    letterSpacing: 2.5,
   };
 
   const domainStyle = typography?.certDomain || {
     fontFamily: 'Inter',
-    color: typography?.domainColor || '#1f6fd6',
+    color: typography?.domainColor || '#12539c',
     fontWeight: '700',
+    fontSize: undefined,
+    fontStyle: 'normal',
+    letterSpacing: 0.4,
   };
 
   const descStyle = typography?.certDesc || {
     fontFamily: typography?.descriptionFont || 'Inter',
     color: '#333d4a',
+    fontWeight: '400',
+    fontSize: undefined,
+    fontStyle: 'normal',
+    letterSpacing: 0,
   };
 
   const signatoryStyle = typography?.certSignatory || {
     fontFamily: 'Inter',
     color: '#0b2545',
     fontWeight: '600',
+    fontSize: undefined,
+    fontStyle: 'normal',
+    letterSpacing: 0,
   };
 
   const metaStyle = typography?.certMeta || {
     fontFamily: typography?.metaFont || 'JetBrains Mono',
     color: '#000000',
     fontWeight: '600',
+    fontSize: undefined,
+    fontStyle: 'normal',
+    letterSpacing: 0.2,
   };
 
-  const eyebrow = companyTemplate?.eyebrow || 'This certifies that';
+  // Ensure any custom fonts are dynamically loaded in document head
+  useEffect(() => {
+    if (nameStyle.fontFamily) loadGoogleFont(nameStyle.fontFamily);
+    if (titleStyle.fontFamily) loadGoogleFont(titleStyle.fontFamily);
+    if (eyebrowStyle.fontFamily) loadGoogleFont(eyebrowStyle.fontFamily);
+    if (domainStyle.fontFamily) loadGoogleFont(domainStyle.fontFamily);
+    if (descStyle.fontFamily) loadGoogleFont(descStyle.fontFamily);
+    if (signatoryStyle.fontFamily) loadGoogleFont(signatoryStyle.fontFamily);
+    if (metaStyle.fontFamily) loadGoogleFont(metaStyle.fontFamily);
+  }, [
+    nameStyle.fontFamily,
+    titleStyle.fontFamily,
+    eyebrowStyle.fontFamily,
+    domainStyle.fontFamily,
+    descStyle.fontFamily,
+    signatoryStyle.fontFamily,
+    metaStyle.fontFamily,
+  ]);
+
+  const eyebrow = companyTemplate?.eyebrow || 'THIS CERTIFIES THAT';
   const mainTitle = companyTemplate?.mainTitle || 'Internship Completion Certificate';
-  const domainPrefix = companyTemplate?.domainPrefix || 'Internship Domain :';
+  const domainPrefix = companyTemplate?.domainPrefix || 'Internship Domain';
   const p1Text =
     companyTemplate?.descriptionParagraph1 ||
     'This Certificate of Completion is proudly awarded in recognition of the successful completion of the internship program at ATIDETO. Throughout the internship, the intern demonstrated professionalism, dedication, and a strong commitment to learning while contributing to assigned responsibilities and project objectives.';
@@ -86,194 +122,250 @@ export const CertificateCanvas: React.FC<CertificateCanvasProps> = ({
   const phone = companyTemplate?.phone || '+91 98765 43210';
   const website = companyTemplate?.website || 'www.atideto.com';
 
-  const defaultQrUrl = data.qrLink || `https://atideto-certificate-system.vercel.app/studentverify.html?id=${encodeURIComponent(data.verifyId || '')}`;
+  const defaultQrUrl =
+    data.qrLink ||
+    `https://atideto-certificate-system.vercel.app/studentverify.html?id=${encodeURIComponent(data.verifyId || '')}`;
 
   return (
-    <div
-      id={id}
-      className="relative w-full max-w-[1040px] mx-auto bg-white rounded-lg shadow-2xl overflow-hidden select-none"
-      style={{
-        aspectRatio: '1344 / 896',
-      }}
-    >
-      {/* Background Frame Image */}
-      <img
-        src="/assets/background1.png"
-        alt="Certificate Background"
-        className="absolute inset-0 w-full h-full object-fill pointer-events-none z-0"
-      />
+    <div className="certificate-wrapper">
+      <div className="certificate" id={id}>
+        {/* Background Frame Image */}
+        <img
+          src="/assets/background1.png"
+          alt="Certificate Background"
+          className="cert-bg"
+        />
 
-      {/* Inner Certificate Content Area */}
-      <div
-        className="relative z-10 w-full h-full flex flex-col justify-between"
-        style={{ padding: '3.6% 4.6% 2.6%' }}
-      >
-        {/* 1. Header Row (Logos & MSME) */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-center">
-            <img
-              src="/assets/atideto-logo.png"
-              alt="ATIDETO Technologies"
-              className="h-[36px] sm:h-[48px] md:h-[54px] object-contain"
-            />
-          </div>
-          <div className="flex flex-col items-end">
-            <img
-              src="/assets/msme-logo.png"
-              alt="MSME Registered"
-              className="h-[30px] sm:h-[42px] md:h-[48px] object-contain"
-            />
-            <span
-              className="font-mono text-[9px] sm:text-[10.5px] font-extrabold text-[#0b2545] tracking-wider mt-0.5"
-            >
-              {udyamId}
-            </span>
-          </div>
-        </div>
-
-        {/* 2. Certificate Eyebrow & Title */}
-        <div className="text-center -mt-2 sm:mt-0">
-          <p
-            className="text-[9.5px] sm:text-[11.5px] md:text-[12px] uppercase mb-0.5"
-            style={{
-              fontFamily: eyebrowStyle.fontFamily,
-              color: eyebrowStyle.color,
-              fontWeight: eyebrowStyle.fontWeight,
-              letterSpacing: `${eyebrowStyle.letterSpacing || 3}px`,
-            }}
-          >
-            {eyebrow}
-          </p>
-          <h2
-            className="text-[18px] sm:text-[26px] md:text-[32px] tracking-tight"
-            style={{
-              fontFamily: titleStyle.fontFamily,
-              color: titleStyle.color,
-              fontWeight: titleStyle.fontWeight,
-              letterSpacing: `${titleStyle.letterSpacing || 0.3}px`,
-            }}
-          >
-            {mainTitle}
-          </h2>
-        </div>
-
-        {/* 3. Student Name with Underline */}
-        <div className="text-center my-0.5">
-          <h3
-            className="leading-none px-4"
-            style={{
-              fontFamily: nameStyle.fontFamily,
-              color: nameStyle.color,
-              fontSize: nameStyle.fontSize ? `clamp(22px, 3.5vw, ${nameStyle.fontSize}px)` : 'clamp(22px, 3.5vw, 44px)',
-              fontStyle: nameStyle.fontStyle || 'italic',
-              fontWeight: nameStyle.fontWeight || '600',
-              letterSpacing: `${nameStyle.letterSpacing || 1}px`,
-            }}
-          >
-            {data.studentName || 'Student Name'}
-          </h3>
-          <div
-            className="mx-auto mt-1.5 h-[1.5px] w-[50%] max-w-[240px]"
-            style={{
-              background: 'linear-gradient(90deg, rgba(168, 121, 31, 0) 0%, rgba(168, 121, 31, 0.5) 20%, rgba(168, 121, 31, 0.7) 50%, rgba(168, 121, 31, 0.5) 80%, rgba(168, 121, 31, 0) 100%)',
-              opacity: 0.7,
-            }}
-          />
-        </div>
-
-        {/* 4. Domain Pill Badge (Exact match to screenshot & preview.html) */}
-        <div className="text-center my-1">
-          <div
-            className="inline-flex items-center justify-center px-4 sm:px-6 py-1 sm:py-1.5 rounded-full border border-[#12539c]/20 shadow-sm"
-            style={{
-              background: 'linear-gradient(135deg, rgba(11, 37, 69, 0.04) 0%, rgba(31, 111, 214, 0.08) 50%, rgba(168, 121, 31, 0.07) 100%)',
-              borderLeft: '2.5px solid rgba(168, 121, 31, 0.6)',
-              borderRight: '2.5px solid rgba(168, 121, 31, 0.6)',
-              fontFamily: domainStyle.fontFamily || "'Inter', sans-serif",
-            }}
-          >
-            <span className="text-[10px] sm:text-[12px] md:text-[13.5px] font-semibold text-[#0b2545]">
-              {domainPrefix}&nbsp;:&nbsp;
-              <span className="font-bold" style={{ color: domainStyle.color || '#1f6fd6', fontWeight: domainStyle.fontWeight || '700' }}>
-                {data.course || 'Domain / Course'}
-              </span>
-            </span>
-          </div>
-        </div>
-
-        {/* 5. Description Paragraphs (Exact match to screenshot) */}
-        <div
-          className="text-center space-y-1.5 sm:space-y-2 text-[9px] sm:text-[11px] md:text-[12px] leading-relaxed px-2 sm:px-6 max-w-[94%] mx-auto"
-          style={{ fontFamily: descStyle.fontFamily || "'Inter', sans-serif", color: descStyle.color || '#333d4a' }}
-        >
-          <p className="m-0">{p1Text}</p>
-          <p className="m-0">
-            {p2Prefix}{' '}
-            <span className="font-bold text-[#1f6fd6]">{formatDate(data.startDate)}</span> to{' '}
-            <span className="font-bold text-[#1f6fd6]">{formatDate(data.endDate)}</span> {p2Mid}{' '}
-            <strong className="font-bold text-[#0b2545]">{data.college || '—'}</strong>
-            {data.registerNo ? (
-              <>
-                {' '}(Register No.: <strong className="font-bold text-[#0b2545]">{data.registerNo}</strong>)
-              </>
-            ) : null}
-            {p2Suffix}
-          </p>
-        </div>
-
-        {/* 6. Bottom Row: Meta (Left), QR Code (Center), Signature (Right) */}
-        <div className="grid grid-cols-3 items-end pt-2 px-2 sm:px-4">
-          {/* Left Meta Table */}
-          <div className="space-y-0.5 text-[8.5px] sm:text-[10px] md:text-[11px]">
-            <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
-              <span className="font-semibold text-[#0b2545]">{durationLabel}</span>
-              <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{data.duration || '—'}</b>
-            </div>
-            <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
-              <span className="font-semibold text-[#0b2545]">{issueDateLabel}</span>
-              <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{formatDate(data.issueDate)}</b>
-            </div>
-            <div className="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] items-baseline">
-              <span className="font-semibold text-[#0b2545]">{verifyIdLabel}</span>
-              <b className="font-mono font-bold" style={{ fontFamily: metaStyle.fontFamily, color: metaStyle.color }}>{data.verifyId || '—'}</b>
-            </div>
-          </div>
-
-          {/* Center QR Code */}
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="p-1 bg-white border border-[#dfe4ea] rounded shadow-sm">
-              <QRCodeSVG
-                value={defaultQrUrl}
-                size={58}
-                level="M"
-                includeMargin={false}
+        {/* Inner Certificate Content Area */}
+        <div className="cert-inner">
+          {/* 1. Header Row (Logos & MSME) */}
+          <div className="cert-top">
+            <div className="cert-top-left">
+              <img
+                src="/assets/atideto-logo.png"
+                alt="ATIDETO Technologies"
+                className="cert-atideto-logo"
               />
             </div>
-            <span className="text-[7.5px] sm:text-[9px] font-medium text-[#5c7595] mt-0.5">
-              {qrCaption}
-            </span>
+            <div className="cert-top-right">
+              <img
+                src="/assets/msme-logo.png"
+                alt="MSME Registered"
+                className="cert-msme-logo"
+              />
+              <span className="udyam-id" id="out-udyamId">
+                {udyamId}
+              </span>
+            </div>
           </div>
 
-          {/* Right Signature Block */}
-          <div className="flex flex-col items-center justify-end text-center justify-self-end">
-            <div className="w-[100px] sm:w-[130px] border-b border-[#0b2545] mb-1" />
-            <p className="text-[8px] sm:text-[10px] md:text-[11px]" style={{ fontFamily: signatoryStyle.fontFamily || "'Inter', sans-serif", color: signatoryStyle.color || '#0b2545', fontWeight: signatoryStyle.fontWeight || '600' }}>
-              {founderDesignation}
+          {/* 2. Certificate Eyebrow & Title */}
+          <div className="cert-title-block">
+            <p
+              className="cert-eyebrow"
+              id="out-eyebrow"
+              style={{
+                fontFamily: getCleanFontFamily(eyebrowStyle.fontFamily, 'sans-serif'),
+                color: eyebrowStyle.color,
+                fontWeight: eyebrowStyle.fontWeight,
+                fontStyle: eyebrowStyle.fontStyle,
+                fontSize: eyebrowStyle.fontSize ? `${eyebrowStyle.fontSize}px` : undefined,
+                letterSpacing:
+                  eyebrowStyle.letterSpacing !== undefined ? `${eyebrowStyle.letterSpacing}px` : undefined,
+              }}
+            >
+              {eyebrow}
+            </p>
+            <h2
+              className="cert-title"
+              id="out-title"
+              style={{
+                fontFamily: getCleanFontFamily(titleStyle.fontFamily, 'serif'),
+                color: titleStyle.color,
+                fontWeight: titleStyle.fontWeight,
+                fontStyle: titleStyle.fontStyle,
+                fontSize: titleStyle.fontSize ? `${titleStyle.fontSize}px` : undefined,
+                letterSpacing:
+                  titleStyle.letterSpacing !== undefined ? `${titleStyle.letterSpacing}px` : undefined,
+              }}
+            >
+              {mainTitle}
+            </h2>
+          </div>
+
+          {/* 3. Student Name with Underline */}
+          <div className="cert-name-block">
+            <h3
+              className="cert-name"
+              id="out-studentName"
+              style={{
+                fontFamily: getCleanFontFamily(nameStyle.fontFamily, 'serif'),
+                color: nameStyle.color,
+                fontSize: nameStyle.fontSize ? `${nameStyle.fontSize}px` : undefined,
+                fontStyle: nameStyle.fontStyle || 'italic',
+                fontWeight: nameStyle.fontWeight || '600',
+                letterSpacing: nameStyle.letterSpacing !== undefined ? `${nameStyle.letterSpacing}px` : undefined,
+              }}
+            >
+              {data.studentName || 'Student Name'}
+            </h3>
+            <div className="cert-underline" />
+          </div>
+
+          {/* 4. Domain Pill Badge */}
+          <div className="cert-domain-wrapper">
+            <p
+              className="cert-domain"
+              style={{
+                fontFamily: getCleanFontFamily(domainStyle.fontFamily, 'sans-serif'),
+                fontSize: domainStyle.fontSize ? `${domainStyle.fontSize}px` : undefined,
+                fontStyle: domainStyle.fontStyle,
+                letterSpacing: domainStyle.letterSpacing !== undefined ? `${domainStyle.letterSpacing}px` : undefined,
+              }}
+            >
+              {domainPrefix}&nbsp;:&nbsp;
+              <span
+                id="out-domain"
+                style={{
+                  color: domainStyle.color || '#12539c',
+                  fontWeight: domainStyle.fontWeight || '700',
+                  fontFamily: getCleanFontFamily(domainStyle.fontFamily, 'sans-serif'),
+                }}
+              >
+                {data.course || 'Domain / Course'}
+              </span>
             </p>
           </div>
-        </div>
 
-        {/* 7. Footer Contact Bar */}
-        <div className="flex items-center justify-center gap-4 sm:gap-8 text-[8px] sm:text-[9.5px] md:text-[10.5px] text-[#5c7595] pt-1.5 border-t border-[#dfe4ea] px-2 sm:px-4">
-          <span className="flex items-center gap-1">
-            <span className="text-[#1f6fd6]">✉</span> {email}
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-[#1f6fd6]">☎</span> {phone}
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="text-[#1f6fd6]">🌐</span> {website}
-          </span>
+          {/* 5. Description Paragraphs */}
+          <div
+            className="cert-description"
+            style={{
+              fontFamily: getCleanFontFamily(descStyle.fontFamily, 'sans-serif'),
+              color: descStyle.color,
+              fontWeight: descStyle.fontWeight,
+              fontStyle: descStyle.fontStyle,
+              fontSize: descStyle.fontSize ? `${descStyle.fontSize}px` : undefined,
+              letterSpacing: descStyle.letterSpacing !== undefined ? `${descStyle.letterSpacing}px` : undefined,
+            }}
+          >
+            <p id="out-descParagraph">
+              {p1Text.includes('ATIDETO') ? (
+                <>
+                  {p1Text.split('ATIDETO')[0]}
+                  <strong>ATIDETO</strong>
+                  {p1Text.split('ATIDETO').slice(1).join('ATIDETO')}
+                </>
+              ) : (
+                p1Text
+              )}
+            </p>
+            <p>
+              {p2Prefix}{' '}
+              <span id="out-startDate">{formatCertificateDate(data.startDate)}</span> to{' '}
+              <span id="out-endDate">{formatCertificateDate(data.endDate)}</span> {p2Mid}{' '}
+              <strong id="out-collegeName">{data.college || '—'}</strong>
+              {data.registerNo ? (
+                <>
+                  {' '}(Register No.: <strong id="out-registerNo">{data.registerNo}</strong>)
+                </>
+              ) : null}
+              {p2Suffix}
+            </p>
+          </div>
+
+          {/* 6. Bottom Information Row: Meta (Left), QR Code (Center), Signature (Right) */}
+          <div className="cert-bottom">
+            {/* Left Meta Table */}
+            <div className="cert-meta">
+              <p style={{ fontStyle: metaStyle.fontStyle, fontSize: metaStyle.fontSize ? `${metaStyle.fontSize}px` : undefined }}>
+                <span>{durationLabel}</span>
+                <b
+                  id="out-duration"
+                  style={{
+                    fontFamily: getCleanFontFamily(metaStyle.fontFamily, 'monospace'),
+                    color: metaStyle.color,
+                    fontWeight: metaStyle.fontWeight,
+                    letterSpacing: metaStyle.letterSpacing !== undefined ? `${metaStyle.letterSpacing}px` : undefined,
+                  }}
+                >
+                  {data.duration || '—'}
+                </b>
+              </p>
+              <p style={{ fontStyle: metaStyle.fontStyle, fontSize: metaStyle.fontSize ? `${metaStyle.fontSize}px` : undefined }}>
+                <span>{issueDateLabel}</span>
+                <b
+                  id="out-issueDate"
+                  style={{
+                    fontFamily: getCleanFontFamily(metaStyle.fontFamily, 'monospace'),
+                    color: metaStyle.color,
+                    fontWeight: metaStyle.fontWeight,
+                    letterSpacing: metaStyle.letterSpacing !== undefined ? `${metaStyle.letterSpacing}px` : undefined,
+                  }}
+                >
+                  {formatCertificateDate(data.issueDate)}
+                </b>
+              </p>
+              <p style={{ fontStyle: metaStyle.fontStyle, fontSize: metaStyle.fontSize ? `${metaStyle.fontSize}px` : undefined }}>
+                <span>{verifyIdLabel}</span>
+                <b
+                  id="out-verifyId"
+                  style={{
+                    fontFamily: getCleanFontFamily(metaStyle.fontFamily, 'monospace'),
+                    color: metaStyle.color,
+                    fontWeight: metaStyle.fontWeight,
+                    letterSpacing: metaStyle.letterSpacing !== undefined ? `${metaStyle.letterSpacing}px` : undefined,
+                  }}
+                >
+                  {data.verifyId || '—'}
+                </b>
+              </p>
+            </div>
+
+            {/* Center QR Code */}
+            <div className="cert-qr">
+              <div className="qr-box">
+                <QRCodeSVG
+                  value={defaultQrUrl}
+                  size={72}
+                  level="M"
+                  includeMargin={false}
+                />
+              </div>
+              <span>{qrCaption}</span>
+            </div>
+
+            {/* Right Signature Block */}
+            <div className="cert-signature">
+              <div className="sig-line" />
+              <p
+                id="out-founderName"
+                style={{
+                  fontFamily: getCleanFontFamily(signatoryStyle.fontFamily, 'sans-serif'),
+                  color: signatoryStyle.color,
+                  fontWeight: signatoryStyle.fontWeight,
+                  fontStyle: signatoryStyle.fontStyle,
+                  fontSize: signatoryStyle.fontSize ? `${signatoryStyle.fontSize}px` : undefined,
+                  letterSpacing: signatoryStyle.letterSpacing !== undefined ? `${signatoryStyle.letterSpacing}px` : undefined,
+                }}
+              >
+                {founderDesignation}
+              </p>
+            </div>
+          </div>
+
+          {/* 7. Footer Contact Bar */}
+          <div className="cert-footer">
+            <span>
+              <i>✉</i> <span id="out-mail">{email}</span>
+            </span>
+            <span>
+              <i>☎</i> <span id="out-contact">{phone}</span>
+            </span>
+            <span>
+              <i>🌐</i> <span id="out-website">{website}</span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
